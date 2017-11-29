@@ -1,64 +1,25 @@
 package com.example.androidthings.myproject;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
+import android.os.Bundle;
+
+//package com.voila.voila.voilapicopro;
+
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-
-import com.google.android.things.pio.PeripheralManagerService;
-
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * The main Android Things activity.
- * Students should change which application class is loaded below, but otherwise leave this unchanged.
- *
- */
 
-//public class MainActivity extends Activity {
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
-
-    /** CHANGE THE RIGHT-HAND SIDE OF THIS LINE TO THE NAME OF YOUR APPLICATION CLASS **/
-    private SimplePicoPro myBoardApp = new SensorsCombined();
+public class Home extends AppCompatActivity {
 
 
-    /** DON'T CHANGE THE CODE BELOW - PUT YOUR CODE INTO YOUR APPLICATION CLASS **/
-    private Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.d(TAG, "java.lang.ObjectonCreate");
-        setContentView(R.layout.textlayout);
-
-        //DA
-        myBoardApp.setActivity(this);
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-        Log.d(TAG, "Display height in pixels: "+ dm.heightPixels);
-        Log.d(TAG, "Display width in pixels: "+ dm.widthPixels);
-        Log.d(TAG, "Display density in dpi: "+ dm.densityDpi);
-
-
-        PeripheralManagerService service = new PeripheralManagerService();
-        Log.d(TAG, "Available GPIO: " + service.getGpioList());
-        Log.d(TAG, "Available I2C: " + service.getI2cBusList());
-        Log.d(TAG, "Available PWM: " + service.getPwmList());
-        Log.d(TAG, "Available SPI: " + service.getSpiBusList());
-        Log.d(TAG, "Available UART: " + service.getUartDeviceList());
-
-        myBoardApp.setup();
-        handler.post(loopRunnable);
-        //
+        setContentView(R.layout.activity_home);
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
@@ -79,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("presenceDetected: "+ presenceDetected);
 
     }
-
 
     /** When BLE Sync is made */
     public void BLESync(View view) {
@@ -124,18 +84,15 @@ public class MainActivity extends AppCompatActivity {
 
     /** When Human Presence is detected */
     public void HumanPresenceOn(View view){
-        System.out.println("HumanPresenceOn called");
         ((MyVoilaApp) this.getApplication()).setPresence(1);
         int presenceDetected = ((MyVoilaApp) this.getApplication()).getPresence();
         System.out.println("presenceDetected: "+ presenceDetected);
-
 
         ((MyVoilaApp) this.getApplication()).setQuestion("How was your day?");
         ((MyVoilaApp) this.getApplication()).setQuestionExtra("Question");
 
         Intent intentToAskQuestion = new Intent(this, AskQuestion.class);
         startActivity(intentToAskQuestion);
-
     }
 
     /** When we suppose there is no Human Presence*/
@@ -146,30 +103,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myBoardApp.teardown();
-        try {
-            handler.removeCallbacks(loopRunnable);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-        Log.d(TAG, "onDestroy");
-
-    }
-
-    Runnable loopRunnable = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                myBoardApp.loop();
-                handler.post(this);
-            } catch(Exception e) {
-                Log.e(TAG,e.getMessage());
-            }
-        }
-
-    };
 }

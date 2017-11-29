@@ -1,6 +1,7 @@
 package com.example.androidthings.myproject;
 
 
+import android.content.Intent;
 import android.util.Log;
 import com.google.android.things.contrib.driver.mma8451q.Mma8451Q;
 import com.google.android.things.pio.Gpio;
@@ -96,6 +97,7 @@ public class SensorsCombined extends SimplePicoPro{
         timeValue = Double.parseDouble(currentTime);
 
         //Average out the past 5 readings from IR sensor
+        // SEE AVERAGE LATER
         if (readings.size() <= 5) {
             for (int i = 0; i <= readings.size() - 1; i++) {
                 sum += readings.get(i);
@@ -112,8 +114,8 @@ public class SensorsCombined extends SimplePicoPro{
         // read I2C accelerometer
         try {
             xyz = accelerometer.readSample();
-            println(UART6,"X: "+xyz[0]+"   Y: "+xyz[1]+"   Z: "+xyz[2]);
-            println("X: "+xyz[0]+"   Y: "+xyz[1]+"   Z: "+xyz[2]);
+            //println(UART6,"X: "+xyz[0]+"   Y: "+xyz[1]+"   Z: "+xyz[2]);
+            //println("X: "+xyz[0]+"   Y: "+xyz[1]+"   Z: "+xyz[2]);
 
             AcCurrentTime=millis();
 
@@ -162,9 +164,15 @@ public class SensorsCombined extends SimplePicoPro{
                 printStringToScreen("seen");
                 //digitalWrite(morning, HIGH);
                 if (timeValue<=24.00 && timeValue>12.00){
+                    System.out.println("afternoon");
                     digitalWrite(off,HIGH);
                     digitalWrite(afternoon,LOW);
                     digitalWrite(evening, LOW);
+
+                    //DA
+                    WaveHand();
+
+
                 }
                 else if (timeValue<=12.00){
                     digitalWrite(off,HIGH);

@@ -1,8 +1,10 @@
 package com.example.androidthings.myproject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
 import com.google.android.things.contrib.driver.adcv2x.Adcv2x;
@@ -150,6 +152,15 @@ public abstract class SimplePicoPro extends SimpleBoard {
         } else {
             Log.e(TAG,"printChar: Could not find R.id.editText");
         }
+    }
+
+    /** When hand is waved */
+    public void WaveHand() {
+        ((MyVoilaApp) activity.getApplication()).setQuestion("How was your day?");
+        ((MyVoilaApp) activity.getApplication()).setQuestionExtra("Question");
+
+        Intent intentToAskQuestion = new Intent(activity, AskQuestion.class);
+        activity.startActivity(intentToAskQuestion);
     }
 
     void printStringToScreen(String s) {

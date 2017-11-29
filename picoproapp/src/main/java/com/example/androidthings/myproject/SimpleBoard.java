@@ -1,6 +1,7 @@
 package com.example.androidthings.myproject;
 
 import android.os.SystemClock;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.things.pio.Gpio;
@@ -19,7 +20,7 @@ import java.io.IOException;
  * Created by bjoern on 8/14/17.
  */
 
-public abstract class SimpleBoard {
+public abstract class SimpleBoard {//extends AppCompatActivity {
     private static final String TAG = SimpleBoard.class.getSimpleName();
     static final boolean HIGH = true;
     static final boolean LOW = false;
