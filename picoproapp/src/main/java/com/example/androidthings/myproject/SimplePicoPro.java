@@ -16,6 +16,8 @@ import com.google.android.things.pio.SpiDevice;
 import com.google.android.things.pio.UartDevice;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by bjoern on 8/14/17.
@@ -136,64 +138,10 @@ public abstract class SimplePicoPro extends SimpleBoard {
     }
 
     public void setActivity(Activity a) {
+
         activity = a;
     }
-    void printCharacterToScreen(char c) {
-        if (activity == null) {
-            Log.e(TAG,"printChar: activity is null");
-            return;
-        }
 
-        EditText editText;
-        editText = (EditText) activity.findViewById(R.id.editText);
-
-        if(editText != null) {
-            editText.getText().append(c);
-        } else {
-            Log.e(TAG,"printChar: Could not find R.id.editText");
-        }
-    }
-
-    /** When hand is waved */
-    public void WaveHand() {
-        ((MyVoilaApp) activity.getApplication()).setQuestion("How was your day?");
-        ((MyVoilaApp) activity.getApplication()).setQuestionExtra("Question");
-
-        Intent intentToAskQuestion = new Intent(activity, AskQuestion.class);
-        activity.startActivity(intentToAskQuestion);
-    }
-
-    void printStringToScreen(String s) {
-        if (activity == null) {
-            Log.e(TAG,"printString: activity is null");
-            return;
-        }
-
-        EditText editText;
-        editText = (EditText) activity.findViewById(R.id.editText);
-
-        if(editText != null) {
-            editText.getText().append(s);
-        } else {
-            Log.e(TAG,"printString: Could not find R.id.editText");
-        }
-    }
-
-    void clearStringOnScreen() {
-        if (activity == null) {
-            Log.e(TAG,"clearString: activity is null");
-            return;
-        }
-
-        EditText editText;
-        editText = (EditText) activity.findViewById(R.id.editText);
-
-        if(editText != null) {
-            editText.setText("");
-        } else {
-            Log.e(TAG,"clearString: Could not find R.id.editText");
-        }
-    }
 
     public void teardown() {
         try {
@@ -228,6 +176,121 @@ public abstract class SimplePicoPro extends SimpleBoard {
 
 
     }
+
+    // INTERACTIONS
+
+    /** When hand is waved */
+    public void WaveHand() {
+        ((MyVoilaApp) activity.getApplication()).setQuestion("How was your day?");
+        ((MyVoilaApp) activity.getApplication()).setQuestionExtra("Question");
+
+        Intent intentToAskQuestion = new Intent(activity, AskQuestion.class);
+        activity.startActivity(intentToAskQuestion);
+    }
+
+    public int getSleepingStatus(){
+        int sleeping = ((MyVoilaApp) activity.getApplication()).getSleepingStatus();
+        return sleeping;
+    }
+
+
+
+    /** When toggle action is made before going to bed */
+    public void ToggleSleep() {
+        int sleeping = ((MyVoilaApp) activity.getApplication()).getSleepingStatus();
+            ((MyVoilaApp) activity.getApplication()).setSleepingStatus(1);
+            Date currentTime = Calendar.getInstance().getTime();
+            ((MyVoilaApp) activity.getApplication()).setSleepStartTime(currentTime);
+            System.out.println("sleeping : "+((MyVoilaApp) activity.getApplication()).getSleepingStatus());
+            System.out.println("toggling time: "+currentTime);
+
+            Intent intentToGoodNight = new Intent(activity, SleepingMode.class);
+            activity.startActivity(intentToGoodNight);
+    }
+
+    public void ToggleWakeUp() {
+        ((MyVoilaApp) activity.getApplication()).setSleepingStatus(0);
+        Date currentTime = Calendar.getInstance().getTime();
+        ((MyVoilaApp) activity.getApplication()).setSleepEndTime(currentTime);
+        System.out.println("sleeping : "+((MyVoilaApp) activity.getApplication()).getSleepingStatus());
+        System.out.println("toggling time: "+currentTime);
+
+        Date sleepStart = ((MyVoilaApp) activity.getApplication()).getSleepStartTime();
+        long sleepDuration =  currentTime.getTime()- sleepStart.getTime() ;
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long SleepElapsedHours = sleepDuration / hoursInMilli;
+        sleepDuration = sleepDuration % hoursInMilli;
+        long SleepElapsedMinutes = sleepDuration / minutesInMilli;
+        sleepDuration = sleepDuration % minutesInMilli;
+        long SleepElapsedSeconds = sleepDuration / secondsInMilli;
+        System.out.println("Sleep Duration: "+ sleepDuration+" ms");
+        System.out.println("Sleep Duration: "+ SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min, "+ SleepElapsedSeconds+" s");
+
+
+        ((MyVoilaApp) activity.getApplication()).setQuestion("How did you sleep?");
+        ((MyVoilaApp) activity.getApplication()).setQuestionExtra("Sleep Duration: "+SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min");
+
+        Intent intentToAskQuestion = new Intent(activity, AskQuestion.class);
+        activity.startActivity(intentToAskQuestion);
+
+    }
+
+
+        /*
+    void printCharacterToScreen(char c) {
+        if (activity == null) {
+            Log.e(TAG,"printChar: activity is null");
+            return;
+        }
+
+        EditText editText;
+        editText = (EditText) activity.findViewById(R.id.editText);
+
+        if(editText != null) {
+            editText.getText().append(c);
+        } else {
+            Log.e(TAG,"printChar: Could not find R.id.editText");
+        }
+    }
+    */
+
+    /*
+    void printStringToScreen(String s) {
+        if (activity == null) {
+            Log.e(TAG,"printString: activity is null");
+            return;
+        }
+
+        EditText editText;
+        editText = (EditText) activity.findViewById(R.id.editText);
+
+        if(editText != null) {
+            editText.getText().append(s);
+        } else {
+            Log.e(TAG,"printString: Could not find R.id.editText");
+        }
+    }
+    */
+
+    /*
+    void clearStringOnScreen() {
+        if (activity == null) {
+            Log.e(TAG,"clearString: activity is null");
+            return;
+        }
+
+        EditText editText;
+        editText = (EditText) activity.findViewById(R.id.editText);
+
+        if(editText != null) {
+            editText.setText("");
+        } else {
+            Log.e(TAG,"clearString: Could not find R.id.editText");
+        }
+    }
+    */
 
 
 }

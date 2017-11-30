@@ -24,7 +24,6 @@ public class SensorsCombined extends SimplePicoPro{
     double shortSum1 = 0;
     double shortAvg = 0;
     double average = 0;
-    long IrCurrentTime = 0;
     long IrTriggerTime = 0;
     Gpio morning = GPIO_39;
     Gpio afternoon = GPIO_37;
@@ -32,11 +31,13 @@ public class SensorsCombined extends SimplePicoPro{
     Gpio off = GPIO_34;
     double timeValue=0;
 
+    //Current time for all sensors
+    long currentTime=0;
+
     //Initialize everything for accelerometer
     Mma8451Q accelerometer;
     float[] xyz = {0.f,0.f,0.f}; //store X,Y,Z acceleration of MMA8451 accelerometer here [units: G]
     float[] last={0.f,0.f,0.f};
-    long AcCurrentTime=0;
     long AcTriggerTime=0;
     public static int triggerValue =0;
 
@@ -74,17 +75,21 @@ public class SensorsCombined extends SimplePicoPro{
 
     @Override
     public void loop() {
+
+        // Reading the App parameters
+        int sleeping = getSleepingStatus();
+
         //initiliaze off light pins to 0
         //digitalWrite(morning,LOW);
         //digitalWrite(afternoon,LOW);
         //digitalWrite(evening,LOW);
-        digitalWrite (off, LOW);
+        digitalWrite (off, LOW); //?
 
         //initialize variables for IR average readings
         sum = 0;
         sum1 = 0;
         f3 = analogRead(A3);
-        IrCurrentTime = millis();
+        currentTime = millis(); //?
         readings.add(f3);
         listOfStrings.add(Float.toString(f3));
 
@@ -92,9 +97,9 @@ public class SensorsCombined extends SimplePicoPro{
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH.mm");
         dateFormat.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
-        //printStringToScreen(""+dateFormat.format(date));
-        String currentTime = dateFormat.format(date);
-        timeValue = Double.parseDouble(currentTime);
+        //System.out.println(""+dateFormat.format(date));
+        String currentTimeString = dateFormat.format(date);
+        timeValue = Double.parseDouble(currentTimeString);
 
         //Average out the past 5 readings from IR sensor
         // SEE AVERAGE LATER
@@ -107,7 +112,7 @@ public class SensorsCombined extends SimplePicoPro{
             sum1 += readings.get(readings.size() - 1) + readings.get(readings.size() - 2) + readings.get(readings.size() - 3);
             average = sum1 / 3;
         }
-        shortSum = Math.floor(sum * 100) / 100;
+        shortSum = Math.floor(sum * 100) / 100; //?
         shortSum1 = Math.floor(sum1 * 100) / 100;
         shortAvg = Math.floor(average * 100) / 100;
 
@@ -117,12 +122,12 @@ public class SensorsCombined extends SimplePicoPro{
             //println(UART6,"X: "+xyz[0]+"   Y: "+xyz[1]+"   Z: "+xyz[2]);
             //println("X: "+xyz[0]+"   Y: "+xyz[1]+"   Z: "+xyz[2]);
 
-            AcCurrentTime=millis();
+            currentTime=millis(); //?
 
             if (xyz[0]-last[0]>0.2 || last[0]-xyz[0]>0.2) {
                 last=xyz;
-                if (AcCurrentTime - AcTriggerTime > 4000) {
-                    printStringToScreen("Triggered");
+                if (currentTime - AcTriggerTime > 4000) {
+                    System.out.println("Accelerometer Triggered");
                     last = xyz;
                     AcTriggerTime = millis();
                     //delay(2000);
@@ -131,8 +136,8 @@ public class SensorsCombined extends SimplePicoPro{
             }
             else if (xyz[1]-last[1]>0.2 || last[1]-xyz[1]>0.2) {
                 last=xyz;
-                if (AcCurrentTime - AcTriggerTime > 4000) {
-                    printStringToScreen("Triggered");
+                if (currentTime - AcTriggerTime > 4000) {
+                    System.out.println("Accelerometer Triggered");
                     last = xyz;
                     AcTriggerTime=millis();
                     //delay(2000);
@@ -141,8 +146,8 @@ public class SensorsCombined extends SimplePicoPro{
             }
             else if (xyz[2]-last[2]>0.2 || last[2]-xyz[2]>0.2) {
                 last=xyz;
-                if (AcCurrentTime - AcTriggerTime > 4000) {
-                    printStringToScreen("Triggered");
+                if (currentTime - AcTriggerTime > 4000) {
+                    System.out.println("Accelerometer Triggered");
                     last = xyz;
                     AcTriggerTime=millis();
                     //delay(2000);
@@ -159,18 +164,18 @@ public class SensorsCombined extends SimplePicoPro{
         //check if IR sensor has been activated
         //if activated, turn off lights
         if (shortAvg >= 0.4) {
-            if (IrCurrentTime - IrTriggerTime > 500) {
+            if (currentTime - IrTriggerTime > 1000) { //1000 Threshold for IR
                 IrTriggerTime = millis();
-                printStringToScreen("seen");
+                System.out.println("IR seen");
                 //digitalWrite(morning, HIGH);
                 if (timeValue<=24.00 && timeValue>12.00){
-                    System.out.println("afternoon");
-                    digitalWrite(off,HIGH);
-                    digitalWrite(afternoon,LOW);
-                    digitalWrite(evening, LOW);
-
-                    //DA
-                    WaveHand();
+                    if (sleeping ==0){
+                        System.out.println("afternoon");
+                        digitalWrite(off,HIGH);
+                        digitalWrite(afternoon,LOW);
+                        digitalWrite(evening, LOW);
+                        WaveHand();
+                    }
 
 
                 }
@@ -182,8 +187,14 @@ public class SensorsCombined extends SimplePicoPro{
         }
 
         //if its morning and you toggle the device/accelerometer
-        if (triggerValue ==1 &&timeValue <=12.00){
-            digitalWrite(morning, HIGH);
+        if (triggerValue ==1){
+            if(sleeping==1){
+                digitalWrite(morning, HIGH);
+                //ToggleWakeUp();
+            }else{
+                digitalWrite(evening, HIGH);
+                //ToggleSleep();
+            }
         }
         triggerValue=0;
         delay(100);
@@ -197,8 +208,8 @@ public class SensorsCombined extends SimplePicoPro{
         PirCurrentTime = millis();
         if(pin==GPIO_128 && value==HIGH) {
             if (PirCurrentTime - PirTriggerTime > 20000) {
-                printCharacterToScreen('a');
-                printStringToScreen("digitalEdgeEvent" + value + '\n');
+                //System.out.println('a');
+                System.out.println("digitalEdgeEvent " + value + '\n');
                 PirTriggerTime = millis();
                 if (timeValue <= 22.30 && timeValue>12.0) {
                     digitalWrite(afternoon, HIGH);

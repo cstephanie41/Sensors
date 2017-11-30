@@ -1,6 +1,5 @@
 package com.example.androidthings.myproject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.things.pio.PeripheralManagerService;
@@ -37,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Log.d(TAG, "java.lang.ObjectonCreate");
-        setContentView(R.layout.textlayout);
+        setContentView(R.layout.activity_main);
 
         //DA
         myBoardApp.setActivity(this);
@@ -126,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
     public void HumanPresenceOn(View view){
         System.out.println("HumanPresenceOn called");
         ((MyVoilaApp) this.getApplication()).setPresence(1);
-        int presenceDetected = ((MyVoilaApp) this.getApplication()).getPresence();
-        System.out.println("presenceDetected: "+ presenceDetected);
+        //int presenceDetected = ((MyVoilaApp) this.getApplication()).getPresence();
+        System.out.println("presenceDetected: 1");
 
 
         ((MyVoilaApp) this.getApplication()).setQuestion("How was your day?");
@@ -141,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
     /** When we suppose there is no Human Presence*/
     public void HumanPresenceOff(View view){
         ((MyVoilaApp) this.getApplication()).setPresence(0);
-        int presenceDetected = ((MyVoilaApp) this.getApplication()).getPresence();
-        System.out.println("presenceDetected: "+ presenceDetected);
+        //int presenceDetected = ((MyVoilaApp) this.getApplication()).getPresence();
+        System.out.println("presenceDetected: 0" );
     }
 
 
