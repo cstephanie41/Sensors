@@ -7,7 +7,10 @@ import android.os.Bundle;
 
 import android.content.Intent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+import android.widget.Button;
 
 public class AskQuestion extends AppCompatActivity {
 
@@ -39,10 +42,17 @@ public class AskQuestion extends AppCompatActivity {
         textViewTemperature.setText(currentTemperature+"°C");
 
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(0);
+
+
+
+
     }
+
 
     /** Selection of the answer */
     public void selectAnswer1(View view) {
+        final Animation animScale = AnimationUtils.loadAnimation(this, R.anim.abc_popup_enter);
+        view.startAnimation(animScale);
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(1);
     }
     public void selectAnswer2(View view) {
