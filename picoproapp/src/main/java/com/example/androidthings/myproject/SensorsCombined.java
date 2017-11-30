@@ -150,21 +150,22 @@ public class SensorsCombined extends SimplePicoPro{
     void digitalEdgeEvent(Gpio pin, boolean value) {
         //println("digitalEdgeEvent"+pin+", "+value);
         PirCurrentTime = millis();
-        if(pin==GPIO_128 && value==HIGH) {
-            if (PirCurrentTime - PirTriggerTime > 20000) {
-                //System.out.println('a');
-                System.out.println("change presence detection");
-                setPresenceDetected(1);
-                System.out.println("digitalEdgeEvent " + value + '\n');
-                PirTriggerTime = millis();
-                /*
-                if (timeValue <= 22.30 && timeValue>12.0) {
-                    digitalWrite(afternoon, HIGH);
-                } else if (timeValue > 22.30) {
-                    digitalWrite(evening, HIGH);
-                }
-                */
+        if (PirCurrentTime - PirTriggerTime > 20000){
+            setPresenceDetected(0);
+        }
+        if(pin==GPIO_128 && value==HIGH && PirCurrentTime - PirTriggerTime > 20000) {
+            //System.out.println('a');
+            System.out.println("change presence detection");
+            setPresenceDetected(1);
+            System.out.println("digitalEdgeEvent " + value + '\n');
+            PirTriggerTime = millis();
+            /*
+            if (timeValue <= 22.30 && timeValue>12.0) {
+                digitalWrite(afternoon, HIGH);
+            } else if (timeValue > 22.30) {
+                digitalWrite(evening, HIGH);
             }
+            */
         }
     }
 
