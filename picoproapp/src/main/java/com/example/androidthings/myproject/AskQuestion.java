@@ -14,6 +14,8 @@ import android.widget.Button;
 
 public class AskQuestion extends AppCompatActivity {
 
+    Animation animationButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,34 +45,38 @@ public class AskQuestion extends AppCompatActivity {
 
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(0);
 
-
-
-
+        //animateButton = AnimationUtils.loadAnimation(this, R.anim.abc_popup_enter);
+        animationButton = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
     }
 
 
     /** Selection of the answer */
     public void selectAnswer1(View view) {
-        final Animation animScale = AnimationUtils.loadAnimation(this, R.anim.abc_popup_enter);
-        view.startAnimation(animScale);
+        view.startAnimation(animationButton);
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(1);
     }
     public void selectAnswer2(View view) {
+        view.startAnimation(animationButton);
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(2);
     }
     public void selectAnswer3(View view) {
+        view.startAnimation(animationButton);
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(3);
     }
     public void selectAnswer4(View view) {
+        view.startAnimation(animationButton);
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(4);
     }
     public void selectAnswer5(View view) {
+        view.startAnimation(animationButton);
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(5);
     }
     public void selectAnswer6(View view) {
+        view.startAnimation(animationButton);
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(6);
     }
     public void selectAnswer7(View view) {
+        view.startAnimation(animationButton);
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(7);
     }
 

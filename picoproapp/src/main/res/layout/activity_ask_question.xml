@@ -92,34 +92,36 @@
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/textViewQuestion" />
 
-<Button
-    android:id="@+id/button1"
-    android:layout_width="50dp"
-    android:layout_height="50dp"
-    android:layout_marginEnd="36dp"
-    android:background="@android:color/holo_green_dark"
-    android:onClick="selectAnswer1"
-    android:text="@string/button1"
-    app:layout_constraintBottom_toTopOf="@+id/button2"
-    app:layout_constraintEnd_toEndOf="@+id/button2" />
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="46dp"
+        android:layout_marginEnd="36dp"
+        android:background="@drawable/button_round1"
+        android:onClick="selectAnswer1"
+        android:text="@string/button1"
+        app:layout_constraintBottom_toBottomOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="@+id/button2" />
 
-<Button
-    android:id="@+id/button2"
-    android:layout_width="50dp"
-    android:layout_height="50dp"
-    android:layout_marginStart="16dp"
-    android:background="@android:color/holo_green_light"
-    android:onClick="selectAnswer2"
-    android:text="@string/button2"
-    app:layout_constraintBottom_toTopOf="@+id/button3"
-    app:layout_constraintStart_toStartOf="@+id/button3" />
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginStart="14dp"
+        android:background="@drawable/button_round2"
+        android:onClick="selectAnswer2"
+        android:text="@string/button2"
+        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintStart_toStartOf="@+id/button3" />
 
 <Button
     android:id="@+id/button3"
     android:layout_width="50dp"
     android:layout_height="50dp"
     android:layout_marginBottom="30dp"
-    android:background="@android:color/holo_orange_light"
+    android:background="@drawable/button_round3"
     android:onClick="selectAnswer3"
     android:text="@string/button3"
     app:layout_constraintBottom_toBottomOf="@+id/button4"
@@ -130,7 +132,7 @@
     android:layout_width="50dp"
     android:layout_height="50dp"
     android:layout_marginBottom="40dp"
-    android:background="@android:color/holo_orange_dark"
+    android:background="@drawable/button_round4"
     android:onClick="selectAnswer4"
     android:text="@string/button4"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -138,38 +140,40 @@
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent" />
 
-<Button
-    android:id="@+id/button5"
-    android:layout_width="50dp"
-    android:layout_height="50dp"
-    android:layout_marginBottom="30dp"
-    android:background="@android:color/holo_red_light"
-    android:onClick="selectAnswer5"
-    android:text="@string/button5"
-    app:layout_constraintBottom_toBottomOf="@+id/button4"
-    app:layout_constraintEnd_toStartOf="@+id/button4" />
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/button_round5"
+        android:onClick="selectAnswer5"
+        android:text="@string/button5"
+        app:layout_constraintBottom_toBottomOf="@+id/button4"
+        app:layout_constraintEnd_toStartOf="@+id/button4" />
 
-<Button
-    android:id="@+id/button6"
-    android:layout_width="50dp"
-    android:layout_height="50dp"
-    android:layout_marginEnd="16dp"
-    android:background="@android:color/holo_red_dark"
-    android:onClick="selectAnswer6"
-    android:text="@string/button6"
-    app:layout_constraintBottom_toTopOf="@+id/button5"
-    app:layout_constraintEnd_toEndOf="@+id/button5" />
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="14dp"
+        android:background="@drawable/button_round6"
+        android:onClick="selectAnswer6"
+        android:text="@string/button6"
+        app:layout_constraintBottom_toTopOf="@+id/button5"
+        app:layout_constraintEnd_toEndOf="@+id/button5" />
 
-<Button
-    android:id="@+id/button7"
-    android:layout_width="50dp"
-    android:layout_height="50dp"
-    android:layout_marginStart="36dp"
-    android:background="?attr/colorButtonNormal"
-    android:onClick="selectAnswer7"
-    android:text="@string/button7"
-    app:layout_constraintBottom_toTopOf="@+id/button6"
-    app:layout_constraintStart_toStartOf="@+id/button6" />
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="46dp"
+        android:layout_marginStart="36dp"
+        android:background="@drawable/button_round7"
+        android:onClick="selectAnswer7"
+        android:text="@string/button7"
+        app:layout_constraintBottom_toBottomOf="@+id/button6"
+        app:layout_constraintStart_toStartOf="@+id/button6" />
 
 
 <Button
