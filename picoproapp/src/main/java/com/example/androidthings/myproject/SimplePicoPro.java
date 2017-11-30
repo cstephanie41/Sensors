@@ -180,7 +180,8 @@ public abstract class SimplePicoPro extends SimpleBoard {
     // INTERACTIONS
 
     /** When hand is waved */
-    public void WaveHand() {
+    public void popQuestion() {
+        ((MyVoilaApp) activity.getApplication()).setIsAnsweringQuestion(1);
         ((MyVoilaApp) activity.getApplication()).setQuestion("How was your day?");
         ((MyVoilaApp) activity.getApplication()).setQuestionExtra("Question");
 
@@ -194,6 +195,7 @@ public abstract class SimplePicoPro extends SimpleBoard {
         System.out.println("answerSelected: "+ answerSelected);
 
         ((MyVoilaApp) activity.getApplication()).setIsAnsweringQuestion(0);
+        ((MyVoilaApp) activity.getApplication()).setAnswerSelected(0);
 
         Intent intentToMain = new Intent(activity, MainActivity.class);
         activity.startActivity(intentToMain);
@@ -209,7 +211,14 @@ public abstract class SimplePicoPro extends SimpleBoard {
         return isAnsweringQuestion;
     }
 
+    public int getAnswerSelected(){
+        int answerSelected = ((MyVoilaApp) activity.getApplication()).getAnswerSelected();
+        return answerSelected;
+    }
 
+    public void setPresenceDetected(int valuePresence){
+        ((MyVoilaApp) activity.getApplication()).setPresence(valuePresence);
+    }
 
     /** When toggle action is made before going to bed */
     public void ToggleSleep() {

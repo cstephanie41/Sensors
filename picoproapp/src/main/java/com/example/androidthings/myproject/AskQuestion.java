@@ -37,6 +37,8 @@ public class AskQuestion extends AppCompatActivity {
         TextView textViewTemperature = (TextView) findViewById(R.id.textViewTemperature);
         int currentTemperature = ((MyVoilaApp) this.getApplication()).getTemperature();
         textViewTemperature.setText(currentTemperature+"°C");
+
+        ((MyVoilaApp) this.getApplication()).setAnswerSelected(0);
     }
 
     /** Selection of the answer */

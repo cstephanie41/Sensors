@@ -55,6 +55,8 @@ public class SensorsCombined extends SimplePicoPro{
         pinMode(off, Gpio.DIRECTION_OUT_INITIALLY_LOW);
         setEdgeTrigger(GPIO_34, Gpio.EDGE_BOTH);
 
+        lightOff();
+
 
         // Initialize the MMQ8451 Accelerometer
         try {
@@ -76,8 +78,9 @@ public class SensorsCombined extends SimplePicoPro{
         // Reading the App parameters
         int sleeping = getSleepingStatus();
         int isAnsweringQuestion = isAnsweringQuestion();
+        int answerSelected = getAnswerSelected();
 
-        digitalWrite (off, LOW);
+        //digitalWrite (off, LOW);
 
         //Get current real time
         timeValue = getCurrentTimeValue();
@@ -88,22 +91,27 @@ public class SensorsCombined extends SimplePicoPro{
         //check if IR sensor has been activated
         //if activated, turn off lights
         if (irTriggered ==1) {
+            System.out.println(answerSelected);
             if (sleeping == 0){ // No waving hand is accepted if the user is sleeping
-                if (isAnsweringQuestion==1){ //If the device asks a question to the user
+                if (isAnsweringQuestion==1 && answerSelected >0){ //If the device asks a question to the user
                     confirmAnswer();
+                    lightOff();
                 }
-                else{ // If the device has a question  to ask to the user or the user wants to pop up a question
+                else if(isAnsweringQuestion==0 && answerSelected ==0){ // If the user wants to pop up a question
+                    popQuestion();
+                    lightOn(2);
+                    /*
                     if (timeValue<=24.00 && timeValue>12.00){
                         System.out.println("afternoon");
                         digitalWrite(off,HIGH);
                         digitalWrite(afternoon,LOW);
                         digitalWrite(evening, LOW);
-                        WaveHand();
                     }
                     else if (timeValue<=12.00){
                         digitalWrite(off,HIGH);
                         digitalWrite(morning,LOW);
                     }
+                    */
                 }
             }
         }
@@ -121,14 +129,16 @@ public class SensorsCombined extends SimplePicoPro{
         }
 
 
-        //if its morning and you toggle the device/accelerometer
+        //if its morning or evening and you toggle the device/accelerometer
         if (toggleTriggered ==1){
             if(sleeping==1){
-                //digitalWrite(morning, HIGH);
+                lightOn(1);
                 ToggleWakeUp();
             }else{
-                //digitalWrite(evening, HIGH);
-                ToggleSleep();
+                if (isAnsweringQuestion ==0){
+                    lightOn(2);
+                    ToggleSleep();
+                }
             }
         }
         delay(100);
@@ -138,18 +148,22 @@ public class SensorsCombined extends SimplePicoPro{
     //Take action with LEDS if its evening or afternoon
     @Override
     void digitalEdgeEvent(Gpio pin, boolean value) {
-        println("digitalEdgeEvent"+pin+", "+value);
+        //println("digitalEdgeEvent"+pin+", "+value);
         PirCurrentTime = millis();
         if(pin==GPIO_128 && value==HIGH) {
             if (PirCurrentTime - PirTriggerTime > 20000) {
                 //System.out.println('a');
+                System.out.println("change presence detection");
+                setPresenceDetected(1);
                 System.out.println("digitalEdgeEvent " + value + '\n');
                 PirTriggerTime = millis();
+                /*
                 if (timeValue <= 22.30 && timeValue>12.0) {
                     digitalWrite(afternoon, HIGH);
                 } else if (timeValue > 22.30) {
                     digitalWrite(evening, HIGH);
                 }
+                */
             }
         }
     }
@@ -191,17 +205,17 @@ public class SensorsCombined extends SimplePicoPro{
     // partOfTheDay : // 1 for morning // 2 for afternoon // 3 for evening
     public void lightOn(int partOfTheDay){
         digitalWrite (off, LOW);
-        if (partOfTheDay==1){digitalWrite(morning,HIGH);}
-        if (partOfTheDay==2){digitalWrite(afternoon,HIGH);}
-        if (partOfTheDay==3){digitalWrite(evening,HIGH);}
+        if (partOfTheDay==1){digitalWrite(afternoon,LOW);digitalWrite(evening,LOW);digitalWrite(morning,HIGH);System.out.println("light on: morning");}
+        if (partOfTheDay==2){digitalWrite(morning,LOW);digitalWrite(evening,LOW);digitalWrite(afternoon,HIGH);System.out.println("light on: afternoon");}
+        if (partOfTheDay==3){digitalWrite(morning,LOW);digitalWrite(afternoon,LOW);digitalWrite(evening,HIGH);System.out.println("light on: evening");}
     }
 
-    public void lightOff(int partOfTheDay){
-        digitalWrite (off, HIGH);
+    public void lightOff(){
+        System.out.println("light off");
         digitalWrite(morning,LOW);
         digitalWrite(afternoon,LOW);
         digitalWrite(evening,LOW);
-
+        digitalWrite (off, HIGH);
     }
 
     public int isAccelerometerTriggered(){
