@@ -188,9 +188,25 @@ public abstract class SimplePicoPro extends SimpleBoard {
         activity.startActivity(intentToAskQuestion);
     }
 
+    //The user waves his/her hand to answer the question after selecting the answer
+    public void confirmAnswer() {
+        int answerSelected = ((MyVoilaApp) activity.getApplication()).getAnswerSelected();
+        System.out.println("answerSelected: "+ answerSelected);
+
+        ((MyVoilaApp) activity.getApplication()).setIsAnsweringQuestion(0);
+
+        Intent intentToMain = new Intent(activity, MainActivity.class);
+        activity.startActivity(intentToMain);
+    }
+
     public int getSleepingStatus(){
         int sleeping = ((MyVoilaApp) activity.getApplication()).getSleepingStatus();
         return sleeping;
+    }
+
+    public int isAnsweringQuestion(){
+        int isAnsweringQuestion = ((MyVoilaApp) activity.getApplication()).getIsAnsweringQuestion();
+        return isAnsweringQuestion;
     }
 
 
@@ -231,6 +247,8 @@ public abstract class SimplePicoPro extends SimpleBoard {
 
         ((MyVoilaApp) activity.getApplication()).setQuestion("How did you sleep?");
         ((MyVoilaApp) activity.getApplication()).setQuestionExtra("Sleep Duration: "+SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min");
+
+        ((MyVoilaApp) activity.getApplication()).setIsAnsweringQuestion(1);
 
         Intent intentToAskQuestion = new Intent(activity, AskQuestion.class);
         activity.startActivity(intentToAskQuestion);

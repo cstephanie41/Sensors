@@ -14,22 +14,15 @@ import java.io.IOException;
 public class SensorsCombined extends SimplePicoPro{
 
     //Initialize values for IR Sensor
-    float f3;
     ArrayList<Float> readings = new ArrayList<Float>();
-    List<String> listOfStrings = new ArrayList<String>();
-    int size = readings.size();
-    double sum = 0;
-    double sum1 = 0;
-    double shortSum = 0;
-    double shortSum1 = 0;
-    double shortAvg = 0;
-    double average = 0;
-    long IrTriggerTime = 0;
+    int irTriggered = 0; //1 if a hand gesture is recongnized, 0 if not
+    long irTriggerTime = 0;
     Gpio morning = GPIO_39;
     Gpio afternoon = GPIO_37;
     Gpio evening = GPIO_35;
     Gpio off = GPIO_34;
     double timeValue=0;
+
 
     //Current time for all sensors
     long currentTime=0;
@@ -39,7 +32,8 @@ public class SensorsCombined extends SimplePicoPro{
     float[] xyz = {0.f,0.f,0.f}; //store X,Y,Z acceleration of MMA8451 accelerometer here [units: G]
     float[] last={0.f,0.f,0.f};
     long AcTriggerTime=0;
-    public static int triggerValue =0;
+    int toggleTriggered =0; // old triggerValue
+    int startAcReading = 0; //makes us able to avoid the first reading of the accelerometer value that automatically create a toggle action
 
     //Initialize for PIR
     long PirCurrentTime=0;
@@ -76,127 +70,67 @@ public class SensorsCombined extends SimplePicoPro{
     @Override
     public void loop() {
 
+        // Reading current Time in ms
+        currentTime = millis();
+
         // Reading the App parameters
         int sleeping = getSleepingStatus();
+        int isAnsweringQuestion = isAnsweringQuestion();
 
-        //initiliaze off light pins to 0
-        //digitalWrite(morning,LOW);
-        //digitalWrite(afternoon,LOW);
-        //digitalWrite(evening,LOW);
-        digitalWrite (off, LOW); //?
-
-        //initialize variables for IR average readings
-        sum = 0;
-        sum1 = 0;
-        f3 = analogRead(A3);
-        currentTime = millis(); //?
-        readings.add(f3);
-        listOfStrings.add(Float.toString(f3));
+        digitalWrite (off, LOW);
 
         //Get current real time
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH.mm");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
-        //System.out.println(""+dateFormat.format(date));
-        String currentTimeString = dateFormat.format(date);
-        timeValue = Double.parseDouble(currentTimeString);
+        timeValue = getCurrentTimeValue();
 
-        //Average out the past 5 readings from IR sensor
-        // SEE AVERAGE LATER
-        if (readings.size() <= 5) {
-            for (int i = 0; i <= readings.size() - 1; i++) {
-                sum += readings.get(i);
-            }
-            average = sum / readings.size();
-        } else {
-            sum1 += readings.get(readings.size() - 1) + readings.get(readings.size() - 2) + readings.get(readings.size() - 3);
-            average = sum1 / 3;
-        }
-        shortSum = Math.floor(sum * 100) / 100; //?
-        shortSum1 = Math.floor(sum1 * 100) / 100;
-        shortAvg = Math.floor(average * 100) / 100;
-
-        // read I2C accelerometer
-        try {
-            xyz = accelerometer.readSample();
-            //println(UART6,"X: "+xyz[0]+"   Y: "+xyz[1]+"   Z: "+xyz[2]);
-            //println("X: "+xyz[0]+"   Y: "+xyz[1]+"   Z: "+xyz[2]);
-
-            currentTime=millis(); //?
-
-            if (xyz[0]-last[0]>0.2 || last[0]-xyz[0]>0.2) {
-                last=xyz;
-                if (currentTime - AcTriggerTime > 4000) {
-                    System.out.println("Accelerometer Triggered");
-                    last = xyz;
-                    AcTriggerTime = millis();
-                    //delay(2000);
-                    triggerValue = 1;
-                }
-            }
-            else if (xyz[1]-last[1]>0.2 || last[1]-xyz[1]>0.2) {
-                last=xyz;
-                if (currentTime - AcTriggerTime > 4000) {
-                    System.out.println("Accelerometer Triggered");
-                    last = xyz;
-                    AcTriggerTime=millis();
-                    //delay(2000);
-                    triggerValue = 1;
-                }
-            }
-            else if (xyz[2]-last[2]>0.2 || last[2]-xyz[2]>0.2) {
-                last=xyz;
-                if (currentTime - AcTriggerTime > 4000) {
-                    System.out.println("Accelerometer Triggered");
-                    last = xyz;
-                    AcTriggerTime=millis();
-                    //delay(2000);
-                    triggerValue = 1;
-                }
-            }
-            else {
-                last=xyz;
-            }
-        }catch (IOException e) {
-            Log.e("HW3Template","loop",e);
-        }
+        // Is the user's hand waved over the IR Sensor ? 1 if yes, O if not
+        irTriggered = returnIrTriggered();
 
         //check if IR sensor has been activated
         //if activated, turn off lights
-        if (shortAvg >= 0.4) {
-            if (currentTime - IrTriggerTime > 1000) { //1000 Threshold for IR
-                IrTriggerTime = millis();
-                System.out.println("IR seen");
-                //digitalWrite(morning, HIGH);
-                if (timeValue<=24.00 && timeValue>12.00){
-                    if (sleeping ==0){
+        if (irTriggered ==1) {
+            if (sleeping == 0){ // No waving hand is accepted if the user is sleeping
+                if (isAnsweringQuestion==1){ //If the device asks a question to the user
+                    confirmAnswer();
+                }
+                else{ // If the device has a question  to ask to the user or the user wants to pop up a question
+                    if (timeValue<=24.00 && timeValue>12.00){
                         System.out.println("afternoon");
                         digitalWrite(off,HIGH);
                         digitalWrite(afternoon,LOW);
                         digitalWrite(evening, LOW);
                         WaveHand();
                     }
-
-
-                }
-                else if (timeValue<=12.00){
-                    digitalWrite(off,HIGH);
-                    digitalWrite(morning,LOW);
+                    else if (timeValue<=12.00){
+                        digitalWrite(off,HIGH);
+                        digitalWrite(morning,LOW);
+                    }
                 }
             }
         }
+
+
+
+        // read I2C accelerometer
+        try {
+
+            xyz = accelerometer.readSample();
+            toggleTriggered = isAccelerometerTriggered();
+
+        }catch (IOException e) {
+            Log.e("HW3Template","loop",e);
+        }
+
 
         //if its morning and you toggle the device/accelerometer
-        if (triggerValue ==1){
+        if (toggleTriggered ==1){
             if(sleeping==1){
-                digitalWrite(morning, HIGH);
-                //ToggleWakeUp();
+                //digitalWrite(morning, HIGH);
+                ToggleWakeUp();
             }else{
-                digitalWrite(evening, HIGH);
-                //ToggleSleep();
+                //digitalWrite(evening, HIGH);
+                ToggleSleep();
             }
         }
-        triggerValue=0;
         delay(100);
     }
 
@@ -219,4 +153,77 @@ public class SensorsCombined extends SimplePicoPro{
             }
         }
     }
+
+    public double getCurrentTimeValue(){
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH.mm");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
+        //System.out.println(""+dateFormat.format(date));
+        String currentTimeString = dateFormat.format(date);
+        return Double.parseDouble(currentTimeString);
+    }
+
+    public int returnIrTriggered(){
+        float f3 = analogRead(A3);
+        readings.add(f3);
+        double sum = 0;
+        double average = 0;
+        int readingSize = readings.size();
+        if (readingSize <= 5) {
+            for (int i = 0; i <= readingSize - 1; i++) {
+                sum += readings.get(i);
+            }
+            average = sum / readingSize;
+        } else {
+            sum += readings.get(readingSize - 1) + readings.get(readingSize - 2) + readings.get(readingSize - 3);
+            average = sum / 3;
+        }
+        //shortSum = Math.floor(sum * 100) / 100;
+        if (Math.floor(average * 100) / 100 >= 0.4 && currentTime - irTriggerTime > 1000){
+            irTriggerTime = millis();
+            System.out.println("IR seen");
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    // partOfTheDay : // 1 for morning // 2 for afternoon // 3 for evening
+    public void lightOn(int partOfTheDay){
+        digitalWrite (off, LOW);
+        if (partOfTheDay==1){digitalWrite(morning,HIGH);}
+        if (partOfTheDay==2){digitalWrite(afternoon,HIGH);}
+        if (partOfTheDay==3){digitalWrite(evening,HIGH);}
+    }
+
+    public void lightOff(int partOfTheDay){
+        digitalWrite (off, HIGH);
+        digitalWrite(morning,LOW);
+        digitalWrite(afternoon,LOW);
+        digitalWrite(evening,LOW);
+
+    }
+
+    public int isAccelerometerTriggered(){
+        //println(UART6,"X: "+xyz[0]+"   Y: "+xyz[1]+"   Z: "+xyz[2]);
+        //println("X: "+xyz[0]+"   Y: "+xyz[1]+"   Z: "+xyz[2]);
+        int acTriggerValue= 0;
+        if (startAcReading==1){
+            if (xyz[0]-last[0]>0.2 || last[0]-xyz[0]>0.2 || xyz[1]-last[1]>0.2 || last[1]-xyz[1]>0.2 || xyz[2]-last[2]>0.2 || last[2]-xyz[2]>0.2) {
+                if (currentTime - AcTriggerTime > 4000) {
+                    System.out.println("Accelerometer Triggered0 "+(xyz[0]-last[0]));
+                    last = xyz;
+                    AcTriggerTime = millis();
+                    //delay(2000);
+                    acTriggerValue = 1;
+                }
+            }
+            last = xyz;
+        }else{
+            startAcReading =1;
+            last = xyz;
+        }
+        return acTriggerValue;
+    }
+
 }

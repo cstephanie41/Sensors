@@ -17,6 +17,7 @@ public class MyVoilaApp extends Application {
     private int steps = 0;
     private int temperature = 0;
     private int answerSelected = 0; // 0 if no question is asked, 1-7: according to the answer selected
+    private int isAnsweringQuestion =0;
     private int sleeping = 0; //0 if not sleeping, 1 if the user is sleeping
     private Date sleepStart,sleepEnd;
     private String question = "";
@@ -29,6 +30,15 @@ public class MyVoilaApp extends Application {
 
     public void setPresence(int presenceValue) {
         this.presenceDetected = presenceValue;
+    }
+
+    //THE USER IS ANSWERING A QUESTION
+    public int getIsAnsweringQuestion() {
+        return isAnsweringQuestion;
+    }
+
+    public void setIsAnsweringQuestion(int isAnsweringQuestionValue) {
+        this.isAnsweringQuestion = isAnsweringQuestionValue;
     }
 
     //STEPS
