@@ -21,7 +21,7 @@ public class SleepingMode extends AppCompatActivity {
         setContentView(R.layout.activity_sleeping_mode);
 
         ValueAnimator valueAnimatorGoodNight = ValueAnimator.ofFloat(1f, 0f);
-        valueAnimatorGoodNight.setDuration(5000);
+        valueAnimatorGoodNight.setDuration(3000);
         valueAnimatorGoodNight.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -33,7 +33,7 @@ public class SleepingMode extends AppCompatActivity {
         valueAnimatorGoodNight.start();
 
         ValueAnimator valueAnimatorClock = ValueAnimator.ofFloat(0f, 1f);
-        valueAnimatorClock.setDuration(10000);
+        valueAnimatorClock.setDuration(6000);
         valueAnimatorClock.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

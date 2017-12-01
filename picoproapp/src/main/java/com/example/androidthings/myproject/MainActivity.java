@@ -31,6 +31,8 @@ import com.google.android.things.pio.PeripheralManagerService;
 import java.util.Calendar;
 import java.util.Date;
 
+import static java.lang.Math.pow;
+
 /**
  * The main Android Things activity.
  * Students should change which application class is loaded below, but otherwise leave this unchanged.
@@ -306,6 +308,22 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    public static int bitArrayToInt(byte[] value){
+        int result = 0;
+        for (int i=0;i<value.length;i++){
+            result += value[value.length-i-1]*pow(8,i);
+        }
+        return result;
+    }
+
+    public void updateNumberOfSteps(int newNumber){
+        TextView textViewNewSteps = (TextView) findViewById(R.id.textViewSteps);
+        ((MyVoilaApp) this.getApplication()).setSteps(newNumber);
+        //textViewNewSteps.setText(newNumber+" Steps");
+        Intent intentToMain = new Intent(this, MainActivity.class);
+        startActivity(intentToMain);
+    }
+
     /**
      * Callback to handle incoming requests to the GATT server.
      * All read/write requests for characteristics are handled here.
@@ -329,7 +347,10 @@ public class MainActivity extends AppCompatActivity {
             if (CustomProfile.WRITE_COUNTER.equals(characteristic.getUuid())) {
                 Log.i(TAG, "Write Output Characteristic");
 
-                CustomProfile.setOutputValue(value);
+                int numberOfStepsUpdated = bitArrayToInt(value);
+                System.out.println("new steps BLE: "+numberOfStepsUpdated);
+                updateNumberOfSteps(numberOfStepsUpdated);
+                //CustomProfile.setOutputValue(value);
 
                 if (responseNeeded) {
                     mBluetoothGattServer.sendResponse(device,

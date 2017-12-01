@@ -54,8 +54,6 @@ public class CustomProfile {
         mCounter = (mCounter+1) %128;
         Log.i(TAG,"compteur: "+mCounter);
         return field;
-
-
     }
 
     public static void setOutputValue (byte[] value) {
