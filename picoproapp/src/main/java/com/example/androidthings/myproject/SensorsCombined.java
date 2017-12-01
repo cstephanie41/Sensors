@@ -125,7 +125,7 @@ public class SensorsCombined extends SimplePicoPro{
             toggleTriggered = isAccelerometerTriggered();
 
         }catch (IOException e) {
-            Log.e("HW3Template","loop",e);
+            Log.e("SensorsCombined","loop",e);
         }
 
 

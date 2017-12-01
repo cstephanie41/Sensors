@@ -22,6 +22,26 @@ public class MyVoilaApp extends Application {
     private Date sleepStart,sleepEnd;
     private String question = "";
     private String questionExtra = "";
+    private int bluetoothActivated = 0;
+    private int sensorsActivated = 0; // We launch the sensors reading only once (at the launch of the device)
+
+    //Sensors ACTIVATED
+    public int getSensorsStatus() {
+        return sensorsActivated;
+    }
+
+    public void setSensorsStatus(int sensorsValue) {
+        this.sensorsActivated = sensorsValue;
+    }
+
+    //BLUETOOTH ACTIVATED
+    public int getBluetoothStatus() {
+        return bluetoothActivated;
+    }
+
+    public void setBluetoothStatus(int bluetoothValue) {
+        this.bluetoothActivated = bluetoothValue;
+    }
 
     //HUMAN PRESENCE
     public int getPresence() {
