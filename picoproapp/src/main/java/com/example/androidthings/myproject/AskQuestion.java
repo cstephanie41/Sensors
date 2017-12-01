@@ -9,12 +9,18 @@ import android.content.Intent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 
 public class AskQuestion extends AppCompatActivity {
 
     Animation animationButton;
+
+    public int whichWeatherLogo(int indexLogo){
+        int[] indexLogoWeatherCorrespondance = ((MyVoilaApp) this.getApplication()).getWeatherLogoCorrespondance();
+        return indexLogoWeatherCorrespondance[indexLogo];
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +49,14 @@ public class AskQuestion extends AppCompatActivity {
         int currentTemperature = ((MyVoilaApp) this.getApplication()).getTemperature();
         textViewTemperature.setText(currentTemperature+"°C");
 
+        // Display the logo weather
+        ImageView imageViewWeather = (ImageView) findViewById(R.id.imageViewWeather);
+        int currentIndexLogoWeather = ((MyVoilaApp) this.getApplication()).getLogoWeather(); //Index
+        int RDrawableIcon = whichWeatherLogo(currentIndexLogoWeather);
+        imageViewWeather.setImageResource(RDrawableIcon);
+
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(0);
 
-        //animateButton = AnimationUtils.loadAnimation(this, R.anim.abc_popup_enter);
         animationButton = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
     }
 

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -49,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothManager mBluetoothManager;
     private BluetoothGattServer mBluetoothGattServer;
     private BluetoothLeAdvertiser mBluetoothLeAdvertiser;
+
+    public int whichWeatherLogo(int indexLogo){
+        int[] indexLogoWeatherCorrespondance = ((MyVoilaApp) this.getApplication()).getWeatherLogoCorrespondance();
+        return indexLogoWeatherCorrespondance[indexLogo];
+    }
 
 
     private Handler handler = new Handler();
@@ -105,6 +111,12 @@ public class MainActivity extends AppCompatActivity {
         TextView textViewTemperature = (TextView) findViewById(R.id.textViewTemperature);
         int currentTemperature = ((MyVoilaApp) this.getApplication()).getTemperature();
         textViewTemperature.setText(currentTemperature+"°C");
+
+        // Display the logo weather
+        ImageView imageViewWeather = (ImageView) findViewById(R.id.imageViewWeather);
+        int currentIndexLogoWeather = ((MyVoilaApp) this.getApplication()).getLogoWeather(); //Index
+        int RDrawableIcon = whichWeatherLogo(currentIndexLogoWeather);
+        imageViewWeather.setImageResource(RDrawableIcon);
 
 
     }
@@ -310,18 +322,26 @@ public class MainActivity extends AppCompatActivity {
 
     public static int bitArrayToInt(byte[] value){
         int result = 0;
-        for (int i=0;i<value.length;i++){
-            result += value[value.length-i-1]*pow(8,i);
+        // we start to look at the digits starting index 1 (because index 0 is dataType)
+        for (int i=1;i<value.length;i++){
+            result += value[value.length-i]*pow(8,i-1);
         }
         return result;
     }
-
-    public void updateNumberOfSteps(int newNumber){
-        TextView textViewNewSteps = (TextView) findViewById(R.id.textViewSteps);
-        ((MyVoilaApp) this.getApplication()).setSteps(newNumber);
-        //textViewNewSteps.setText(newNumber+" Steps");
+    public void reloadMainActivity(){
         Intent intentToMain = new Intent(this, MainActivity.class);
         startActivity(intentToMain);
+    }
+
+    public void updateNumberOfSteps(int newNumber){
+        ((MyVoilaApp) this.getApplication()).setSteps(newNumber);
+        //textViewNewSteps.setText(newNumber+" Steps");
+    }
+    public void updateTemperature(int newTemp){
+        ((MyVoilaApp) this.getApplication()).setTemperature(newTemp);
+    }
+    public void updateLogoWeather(int newLogo){
+        ((MyVoilaApp) this.getApplication()).setLogoWeather(newLogo);
     }
 
     /**
@@ -347,9 +367,22 @@ public class MainActivity extends AppCompatActivity {
             if (CustomProfile.WRITE_COUNTER.equals(characteristic.getUuid())) {
                 Log.i(TAG, "Write Output Characteristic");
 
-                int numberOfStepsUpdated = bitArrayToInt(value);
-                System.out.println("new steps BLE: "+numberOfStepsUpdated);
-                updateNumberOfSteps(numberOfStepsUpdated);
+                if(value[0]==1){ // steps info received
+                    int numberOfStepsUpdated = bitArrayToInt(value);
+                    System.out.println("new steps BLE: "+numberOfStepsUpdated);
+                    updateNumberOfSteps(numberOfStepsUpdated);
+                }else if (value[0]==2){ //temperature info received
+                    int temperatureUpdated = bitArrayToInt(value);
+                    System.out.println("new Temperature BLE: "+temperatureUpdated);
+                    updateTemperature(temperatureUpdated);
+                }else if (value[0]==3){ //logo weather info received
+                    int logoWeatherUpdated = bitArrayToInt(value);
+                    System.out.println("new Logo Weather BLE: "+logoWeatherUpdated);
+                    updateLogoWeather(logoWeatherUpdated);
+                }
+                reloadMainActivity();
+
+                // use it later for stockage
                 //CustomProfile.setOutputValue(value);
 
                 if (responseNeeded) {

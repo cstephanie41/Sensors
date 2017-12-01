@@ -9,12 +9,15 @@
 
     <ImageView
         android:id="@+id/imageViewWeather"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textViewTemperature"
+        app:layout_constraintStart_toStartOf="@+id/textViewTemperature"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/weathersunny" />
+        app:srcCompat="@drawable/weather01d" />
 
     <TextView
         android:id="@+id/textViewTemperature"
