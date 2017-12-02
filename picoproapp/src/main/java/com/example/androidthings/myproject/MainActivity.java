@@ -344,13 +344,6 @@ public class MainActivity extends AppCompatActivity {
     public void updateLogoWeather(int newLogo){
         ((MyVoilaApp) this.getApplication()).setLogoWeather(newLogo);
     }
-    public void updateTimeClock(int newTime){
-        //((MyVoilaApp) this.getApplication()).setLogoWeather(newTime);
-        Calendar c = Calendar.getInstance();
-        c.set(2017, 12, 1, 17, 36, 27);
-        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        am.setTime(c.getTimeInMillis());
-    }
 
     /**
      * Callback to handle incoming requests to the GATT server.
@@ -387,10 +380,6 @@ public class MainActivity extends AppCompatActivity {
                     int logoWeatherUpdated = bitArrayToInt(value);
                     System.out.println("new Logo Weather BLE: "+logoWeatherUpdated);
                     updateLogoWeather(logoWeatherUpdated);
-                }else if (value[0]==4){ //time clock info received
-                    int timeUpdated = bitArrayToInt(value);
-                    System.out.println("new Time BLE: "+timeUpdated);
-                    updateTimeClock(timeUpdated);
                 }
                 reloadMainActivity();
 
