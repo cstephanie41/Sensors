@@ -55,7 +55,8 @@ public class AskQuestion extends AppCompatActivity {
         int RDrawableIcon = whichWeatherLogo(currentIndexLogoWeather);
         imageViewWeather.setImageResource(RDrawableIcon);
 
-        ((MyVoilaApp) this.getApplication()).setAnswerSelected(0);
+        //TEMP Put 0 instead
+        ((MyVoilaApp) this.getApplication()).setAnswerSelected(1);
 
         animationButton = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
     }

@@ -25,11 +25,21 @@ public class MyVoilaApp extends Application {
     private String questionExtra = "";
     private int bluetoothActivated = 0;
     private int sensorsActivated = 0; // We launch the sensors reading only once (at the launch of the device)
+    private int partOfTheDay =2; //1 morning, 2 afternoon, 3 evening, 4 night
 
     private static int[] indexLogoWeatherCorrespondance = {R.drawable.weather01d,R.drawable.weather01n,R.drawable.weather02d,R.drawable.weather02n,R.drawable.weather03d,R.drawable.weather03n,R.drawable.weather04d,R.drawable.weather04n,R.drawable.weather09d,R.drawable.weather09n,R.drawable.weather10d,R.drawable.weather10n,R.drawable.weather11d,R.drawable.weather11n,R.drawable.weather13d,R.drawable.weather13n,R.drawable.weather50d,R.drawable.weather50n};
 
     public int[] getWeatherLogoCorrespondance() {
         return indexLogoWeatherCorrespondance;
+    }
+
+    //which part of the day it is // For demo purpose
+    public int getPartOfTheDay() {
+        return partOfTheDay;
+    }
+
+    public void setPartOfTheDay(int partOfTheDayValue) {
+        this.partOfTheDay = partOfTheDayValue;
     }
 
     //Sensors ACTIVATED

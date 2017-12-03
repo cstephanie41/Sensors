@@ -70,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
         int sensorsActivated = ((MyVoilaApp) this.getApplication()).getSensorsStatus();
         int bluetoothActivated = ((MyVoilaApp) this.getApplication()).getBluetoothStatus();
 
+        //DEMO PURPOSE
+        int partOfTheDay = ((MyVoilaApp) this.getApplication()).getPartOfTheDay();
+
         if(sensorsActivated==0){
             myBoardApp.setActivity(this);
             myBoardApp.setup();
@@ -344,6 +347,9 @@ public class MainActivity extends AppCompatActivity {
     public void updateLogoWeather(int newLogo){
         ((MyVoilaApp) this.getApplication()).setLogoWeather(newLogo);
     }
+    public void updatePartOfTheDay(int newPart){
+        ((MyVoilaApp) this.getApplication()).setPartOfTheDay(newPart);
+    }
 
     /**
      * Callback to handle incoming requests to the GATT server.
@@ -380,6 +386,10 @@ public class MainActivity extends AppCompatActivity {
                     int logoWeatherUpdated = bitArrayToInt(value);
                     System.out.println("new Logo Weather BLE: "+logoWeatherUpdated);
                     updateLogoWeather(logoWeatherUpdated);
+                }else if (value[0]==4){ //logo weather info received //DEMO PURPOSE
+                    int partOfTheDayUpdated = bitArrayToInt(value);
+                    System.out.println("new part of the day BLE: "+partOfTheDayUpdated);
+                    updatePartOfTheDay(partOfTheDayUpdated);
                 }
                 reloadMainActivity();
 

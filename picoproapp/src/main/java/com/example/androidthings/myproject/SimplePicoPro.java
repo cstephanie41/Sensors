@@ -180,10 +180,11 @@ public abstract class SimplePicoPro extends SimpleBoard {
     // INTERACTIONS
 
     /** When hand is waved */
-    public void popQuestion() {
+    public void popQuestion(String question, String questionExtra) {
         ((MyVoilaApp) activity.getApplication()).setIsAnsweringQuestion(1);
-        ((MyVoilaApp) activity.getApplication()).setQuestion("How was your day?");
-        ((MyVoilaApp) activity.getApplication()).setQuestionExtra("Question");
+        ((MyVoilaApp) activity.getApplication()).setQuestion(question);
+        ((MyVoilaApp) activity.getApplication()).setQuestionExtra(questionExtra);
+
 
         Intent intentToAskQuestion = new Intent(activity, AskQuestion.class);
         activity.startActivity(intentToAskQuestion);
@@ -214,6 +215,10 @@ public abstract class SimplePicoPro extends SimpleBoard {
     public int getAnswerSelected(){
         int answerSelected = ((MyVoilaApp) activity.getApplication()).getAnswerSelected();
         return answerSelected;
+    }
+    public int getPartOfTheDay(){
+        int partOfTheDay = ((MyVoilaApp) activity.getApplication()).getPartOfTheDay();
+        return partOfTheDay;
     }
 
     public void setPresenceDetected(int valuePresence){
@@ -254,13 +259,14 @@ public abstract class SimplePicoPro extends SimpleBoard {
         System.out.println("Sleep Duration: "+ SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min, "+ SleepElapsedSeconds+" s");
 
 
+        popQuestion("How did you sleep?","Sleep Duration: "+SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min");
+        /*
         ((MyVoilaApp) activity.getApplication()).setQuestion("How did you sleep?");
         ((MyVoilaApp) activity.getApplication()).setQuestionExtra("Sleep Duration: "+SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min");
-
         ((MyVoilaApp) activity.getApplication()).setIsAnsweringQuestion(1);
-
         Intent intentToAskQuestion = new Intent(activity, AskQuestion.class);
         activity.startActivity(intentToAskQuestion);
+        */
 
     }
 

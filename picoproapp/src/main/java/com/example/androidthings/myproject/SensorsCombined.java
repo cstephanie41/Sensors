@@ -79,6 +79,7 @@ public class SensorsCombined extends SimplePicoPro{
         int sleeping = getSleepingStatus();
         int isAnsweringQuestion = isAnsweringQuestion();
         int answerSelected = getAnswerSelected();
+        int partOfTheDay = getPartOfTheDay();
 
         //digitalWrite (off, LOW);
 
@@ -98,8 +99,15 @@ public class SensorsCombined extends SimplePicoPro{
                     lightOff();
                 }
                 else if(isAnsweringQuestion==0 && answerSelected ==0){ // If the user wants to pop up a question
-                    popQuestion();
                     lightOn(2);
+                    if (partOfTheDay==1){
+                        popQuestion("How stressed do you feel today?","Question");
+                    } else if (partOfTheDay==2){
+                        popQuestion("How do you rate your current mood?","Question");
+                    } else if (partOfTheDay==3){
+                        popQuestion("How was your day?","Question");
+                    }
+
                     /*
                     if (timeValue<=24.00 && timeValue>12.00){
                         System.out.println("afternoon");
