@@ -67,61 +67,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/buttonBLESync"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:onClick="BLESync"
-        android:text="BLE SYNC"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/buttonToggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:onClick="Toggle"
-        android:text="Toggle"
-        app:layout_constraintBottom_toTopOf="@+id/buttonBLESync"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/buttonWave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:onClick="WaveHand"
-        android:text="Wave"
-        app:layout_constraintBottom_toTopOf="@+id/buttonToggle"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/buttonPresenceOn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:onClick="HumanPresenceOn"
-        android:text="Presence On"
-        app:layout_constraintBottom_toTopOf="@+id/textViewSteps"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonPresenceOff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:onClick="HumanPresenceOff"
-        android:text="Presence Off"
-        app:layout_constraintBottom_toTopOf="@+id/buttonPresenceOn"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graphSteps"
         android:layout_width="370dp"
