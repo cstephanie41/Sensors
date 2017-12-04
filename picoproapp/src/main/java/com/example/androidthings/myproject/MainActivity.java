@@ -29,6 +29,9 @@ import android.content.pm.PackageManager;
 import android.os.ParcelUuid;
 
 import com.google.android.things.pio.PeripheralManagerService;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -70,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         int sensorsActivated = ((MyVoilaApp) this.getApplication()).getSensorsStatus();
         int bluetoothActivated = ((MyVoilaApp) this.getApplication()).getBluetoothStatus();
 
+        //Steps
+        int[] allSteps = ((MyVoilaApp) this.getApplication()).getAllSteps();
+
         //DEMO PURPOSE
         int partOfTheDay = ((MyVoilaApp) this.getApplication()).getPartOfTheDay();
 
@@ -108,8 +114,7 @@ public class MainActivity extends AppCompatActivity {
         //LAYOUT
         // Write the current number of steps in the activity
         TextView textViewSteps = (TextView) findViewById(R.id.textViewSteps);
-        int currentSteps = ((MyVoilaApp) this.getApplication()).getSteps();
-        textViewSteps.setText(currentSteps+" Steps");
+        textViewSteps.setText(allSteps[0]+" Steps");
 
         // Write the current temperature in the activity
         TextView textViewTemperature = (TextView) findViewById(R.id.textViewTemperature);
@@ -122,6 +127,20 @@ public class MainActivity extends AppCompatActivity {
         int RDrawableIcon = whichWeatherLogo(currentIndexLogoWeather);
         imageViewWeather.setImageResource(RDrawableIcon);
 
+        //Graph
+        GraphView graph = (GraphView) findViewById(R.id.graphSteps);
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+                new DataPoint(0, allSteps[6]),
+                new DataPoint(1, allSteps[5]),
+                new DataPoint(2, allSteps[4]),
+                new DataPoint(3, allSteps[3]),
+                new DataPoint(4, allSteps[2])
+                ,new DataPoint(5, allSteps[1]),
+                new DataPoint(6, allSteps[0])
+        });
+        series.setDrawDataPoints(true);
+        graph.addSeries(series);
+
 
     }
 
@@ -131,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textViewSteps = (TextView) findViewById(R.id.textViewSteps);
         int newSteps = 1657;
-        ((MyVoilaApp) this.getApplication()).setSteps(newSteps);
+        ((MyVoilaApp) this.getApplication()).setDaySteps(0,newSteps);
         textViewSteps.setText(newSteps+" Steps");
 
         TextView textViewTemperature = (TextView) findViewById(R.id.textViewTemperature);
@@ -327,8 +346,8 @@ public class MainActivity extends AppCompatActivity {
     public static int bitArrayToInt(byte[] value){
         int result = 0;
         // we start to look at the digits starting index 1 (because index 0 is dataType)
-        for (int i=1;i<value.length;i++){
-            result += value[value.length-i]*pow(8,i-1);
+        for (int i=2;i<value.length;i++){
+            result += value[value.length-i+1]*pow(8,i-2);
         }
         return result;
     }
@@ -337,8 +356,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intentToMain);
     }
 
-    public void updateNumberOfSteps(int newNumber){
-        ((MyVoilaApp) this.getApplication()).setSteps(newNumber);
+    public void updateNumberOfSteps(int dayConcerned, int newNumber){
+        ((MyVoilaApp) this.getApplication()).setDaySteps(dayConcerned,newNumber);
         //textViewNewSteps.setText(newNumber+" Steps");
     }
     public void updateTemperature(int newTemp){
@@ -376,8 +395,9 @@ public class MainActivity extends AppCompatActivity {
 
                 if(value[0]==1){ // steps info received
                     int numberOfStepsUpdated = bitArrayToInt(value);
-                    System.out.println("new steps BLE: "+numberOfStepsUpdated);
-                    updateNumberOfSteps(numberOfStepsUpdated);
+                    int dayConcerned = value[1];
+                    System.out.println("new steps BLE: day: "+dayConcerned+"steps: "+numberOfStepsUpdated);
+                    updateNumberOfSteps(dayConcerned,numberOfStepsUpdated);
                 }else if (value[0]==2){ //temperature info received
                     int temperatureUpdated = bitArrayToInt(value);
                     System.out.println("new Temperature BLE: "+temperatureUpdated);

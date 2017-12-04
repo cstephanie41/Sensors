@@ -41,7 +41,7 @@ public class AskQuestion extends AppCompatActivity {
 
         // Write the current number of steps in the activity
         TextView textViewSteps = (TextView) findViewById(R.id.textViewSteps);
-        int currentSteps = ((MyVoilaApp) this.getApplication()).getSteps();
+        int currentSteps = ((MyVoilaApp) this.getApplication()).getDaySteps(0);
         textViewSteps.setText(currentSteps+" Steps");
 
         // Write the current temperature in the activity

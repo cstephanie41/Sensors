@@ -29,7 +29,7 @@ public class PreSync extends AppCompatActivity {
     /** When BLE Sync is made */
     public void PreBLESync(View view) {
 
-        ((MyVoilaApp) this.getApplication()).setSteps(1343);
+        ((MyVoilaApp) this.getApplication()).setDaySteps(0,1343);
         ((MyVoilaApp) this.getApplication()).setTemperature(27);
 
         Intent intentToMain = new Intent(this, MainActivity.class);

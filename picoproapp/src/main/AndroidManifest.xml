@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <application
+        android:hardwareAccelerated="true"
         android:name=".MyVoilaApp"
         android:allowBackup="true"
         android:icon="@android:drawable/sym_def_app_icon"
@@ -27,7 +28,8 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <uses-library android:name="com.google.android.things" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -14,7 +14,8 @@ import java.util.Date;
 public class MyVoilaApp extends Application {
 
     private int presenceDetected  =0; // 0 if no human presence detected, 1 if detected
-    private int steps = 0;
+    //private int steps = 0;
+    private int[] steps = {0,0,0,0,0,0,0}; //steps[0] is today, steps[6] is a week ago
     private int temperature = 0;
     private int logoWeather = 0;
     private int answerSelected = 0; // 0 if no question is asked, 1-7: according to the answer selected
@@ -79,12 +80,25 @@ public class MyVoilaApp extends Application {
     }
 
     //STEPS
+    /*
     public int getSteps() {
         return steps;
     }
 
     public void setSteps(int stepsValue) {
         this.steps= stepsValue;
+    }
+    */
+    //day is j-day number of steps
+    public int getDaySteps(int day) {
+        return steps[day];
+    }
+    public int[] getAllSteps() {
+        return steps;
+    }
+
+    public void setDaySteps(int day,int stepsValue) {
+        this.steps[day]= stepsValue;
     }
 
     // LOGO WEATHER
