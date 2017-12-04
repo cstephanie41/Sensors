@@ -98,14 +98,13 @@ public class SensorsCombined extends SimplePicoPro{
                     confirmAnswer();
                     lightOff();
                 }
-                else if(isAnsweringQuestion==0 && answerSelected ==0){ // If the user wants to pop up a question
+                else if(isAnsweringQuestion==0 && answerSelected ==0 && doSomeQuestionRemain()){ // If the user wants to pop up a question
                     lightOn(2);
-                    if (partOfTheDay==1){
-                        popQuestion("How stressed do you feel today?","Question");
-                    } else if (partOfTheDay==2){
-                        popQuestion("How do you rate your current mood?","Question");
-                    } else if (partOfTheDay==3){
-                        popQuestion("How was your day?","Question");
+                    String randomQuestion = getRandomQuestion();
+                    if (partOfTheDay==1 || partOfTheDay==2 || partOfTheDay==3){
+                        popQuestion(randomQuestion,"Question");
+                        updateIndexQuestions();
+
                     }
 
                     /*
@@ -202,7 +201,8 @@ public class SensorsCombined extends SimplePicoPro{
             average = sum / 3;
         }
         //shortSum = Math.floor(sum * 100) / 100;
-        if (Math.floor(average * 100) / 100 >= 0.4 && currentTime - irTriggerTime > 1000){
+        //System.out.println("Ir Average value: "+Math.floor(average * 100) / 100);
+        if (Math.floor(average * 100) / 100 >= 0.5 && currentTime - irTriggerTime > 1000){
             irTriggerTime = millis();
             System.out.println("IR seen");
             return 1;

@@ -5,7 +5,11 @@ import android.app.Application;
 
 import android.app.Application;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by daniel on 26/11/2017.
@@ -28,13 +32,106 @@ public class MyVoilaApp extends Application {
     private int sensorsActivated = 0; // We launch the sensors reading only once (at the launch of the device)
     private int partOfTheDay =2; //1 morning, 2 afternoon, 3 evening, 4 night
 
+
+    private List<String> questionsMorning = Arrays.asList("How did you sleep last night?", "How well did you sleep?","How would you rate your sleep?");
+    private List<String> questionsAfternoon = Arrays.asList("How stressed do you feel today","How do you rate your current mood?");
+    private List<String> questionsEvening = Arrays.asList("How was your day in general?", "How much sport did you do today?");
+    private int indexMorningQuestion = 0;
+    private int indexAfternoonQuestion = 0;
+    private int indexEveningQuestion = 0;
+
     private static int[] indexLogoWeatherCorrespondance = {R.drawable.weather01d,R.drawable.weather01n,R.drawable.weather02d,R.drawable.weather02n,R.drawable.weather03d,R.drawable.weather03n,R.drawable.weather04d,R.drawable.weather04n,R.drawable.weather09d,R.drawable.weather09n,R.drawable.weather10d,R.drawable.weather10n,R.drawable.weather11d,R.drawable.weather11n,R.drawable.weather13d,R.drawable.weather13n,R.drawable.weather50d,R.drawable.weather50n};
 
     public int[] getWeatherLogoCorrespondance() {
         return indexLogoWeatherCorrespondance;
     }
 
-    //which part of the day it is // For demo purpose
+    //QUESTIONS
+    public void initializeQuestions(){
+        Collections.shuffle(questionsMorning);
+        Collections.shuffle(questionsAfternoon);
+        Collections.shuffle(questionsEvening);
+        indexMorningQuestion = 0;
+        indexAfternoonQuestion = 0;
+        indexEveningQuestion = 0;
+    }
+    public int getIndexQuestion(int partOfTheDayValue){
+        if (partOfTheDayValue==1){
+            return indexMorningQuestion;
+        }
+        else if (partOfTheDayValue==2){
+            return indexAfternoonQuestion;
+        }
+        else if (partOfTheDayValue==3){
+            return indexEveningQuestion;
+        }
+        else {return 0;}
+    }
+
+    public String getRandomQuestion(){
+        if (partOfTheDay==1){
+            return questionsMorning.get(indexMorningQuestion);
+        }
+        else if (partOfTheDay==2){
+            return questionsAfternoon.get(indexAfternoonQuestion);
+        }
+        else if (partOfTheDay==3){
+            return questionsEvening.get(indexEveningQuestion);
+        }
+        else{
+            return "error Get Question";
+        }
+    }
+
+    public void updateIndexQuestions(){
+        if (partOfTheDay==1){
+            indexMorningQuestion+=1;
+        }
+        else if (partOfTheDay==2){
+            indexAfternoonQuestion+=1;
+        }
+        else if (partOfTheDay==3){
+            indexEveningQuestion+=1;
+        }
+    }
+
+    public boolean doSomeQuestionRemain(){
+        boolean result;
+        if (partOfTheDay==1){
+            result =  indexMorningQuestion == questionsMorning.size();
+        }
+        else if (partOfTheDay==2){
+            result =  indexAfternoonQuestion == questionsAfternoon.size();
+        }
+        else if (partOfTheDay==3){
+            result =  indexEveningQuestion == questionsEvening.size();
+        }else{
+            result = true;
+        }
+        System.out.println("doSomeQuestionRemain: "+ !result);
+        return !result;
+    }
+
+    //ASK QUESTION
+    // handle the question printed on the ask_question activity
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String questionValue) {
+        this.question= questionValue;
+    }
+
+    public String getQuestionExtra() {
+        return questionExtra;
+    }
+
+    public void setQuestionExtra(String questionExtraValue) {
+        this.questionExtra= questionExtraValue;
+    }
+
+
+    //DEMO PURPOSE: which part of the day it is // For demo purpose
     public int getPartOfTheDay() {
         return partOfTheDay;
     }
@@ -153,20 +250,5 @@ public class MyVoilaApp extends Application {
         this.sleepEnd= sleepEndValue;
     }
 
-    //ASK QUESTION
-    public String getQuestion() {
-        return question;
-    }
 
-    public void setQuestion(String questionValue) {
-        this.question= questionValue;
-    }
-
-    public String getQuestionExtra() {
-        return questionExtra;
-    }
-
-    public void setQuestionExtra(String questionExtraValue) {
-        this.questionExtra= questionExtraValue;
-    }
 }

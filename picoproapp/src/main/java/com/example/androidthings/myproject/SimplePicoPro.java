@@ -225,6 +225,20 @@ public abstract class SimplePicoPro extends SimpleBoard {
         ((MyVoilaApp) activity.getApplication()).setPresence(valuePresence);
     }
 
+    public int getIndexQuestion(int partOfTheDayValue){
+        return ((MyVoilaApp) activity.getApplication()).getIndexQuestion(partOfTheDayValue);
+    }
+    public String getRandomQuestion(){
+        return ((MyVoilaApp) activity.getApplication()).getRandomQuestion();
+    }
+    public void updateIndexQuestions(){
+        ((MyVoilaApp) activity.getApplication()).updateIndexQuestions();
+    }
+    public boolean doSomeQuestionRemain(){
+        return ((MyVoilaApp) activity.getApplication()).doSomeQuestionRemain();
+    }
+
+
     /** When toggle action is made before going to bed */
     public void ToggleSleep() {
         int sleeping = ((MyVoilaApp) activity.getApplication()).getSleepingStatus();
@@ -257,6 +271,7 @@ public abstract class SimplePicoPro extends SimpleBoard {
         long SleepElapsedSeconds = sleepDuration / secondsInMilli;
         System.out.println("Sleep Duration: "+ sleepDuration+" ms");
         System.out.println("Sleep Duration: "+ SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min, "+ SleepElapsedSeconds+" s");
+
 
 
         popQuestion("How did you sleep?","Sleep Duration: "+SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min");

@@ -2,12 +2,15 @@ package com.example.androidthings.myproject;
 
 import android.app.AlarmManager;
 import android.content.Intent;
+import android.icu.text.SymbolTable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.bluetooth.BluetoothAdapter;
@@ -33,6 +36,11 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -59,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         int[] indexLogoWeatherCorrespondance = ((MyVoilaApp) this.getApplication()).getWeatherLogoCorrespondance();
         return indexLogoWeatherCorrespondance[indexLogo];
     }
+
+    Animation animationGraph;
 
 
     private Handler handler = new Handler();
@@ -128,18 +138,20 @@ public class MainActivity extends AppCompatActivity {
         imageViewWeather.setImageResource(RDrawableIcon);
 
         //Graph
+        animationGraph = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         GraphView graph = (GraphView) findViewById(R.id.graphSteps);
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
                 new DataPoint(0, allSteps[6]),
                 new DataPoint(1, allSteps[5]),
                 new DataPoint(2, allSteps[4]),
                 new DataPoint(3, allSteps[3]),
-                new DataPoint(4, allSteps[2])
-                ,new DataPoint(5, allSteps[1]),
+                new DataPoint(4, allSteps[2]),
+                new DataPoint(5, allSteps[1]),
                 new DataPoint(6, allSteps[0])
         });
         series.setDrawDataPoints(true);
         graph.addSeries(series);
+        graph.startAnimation(animationGraph);
 
 
     }
@@ -368,6 +380,9 @@ public class MainActivity extends AppCompatActivity {
     }
     public void updatePartOfTheDay(int newPart){
         ((MyVoilaApp) this.getApplication()).setPartOfTheDay(newPart);
+        if (newPart==4){
+            ((MyVoilaApp) this.getApplication()).initializeQuestions();
+        }
     }
 
     /**
@@ -398,6 +413,40 @@ public class MainActivity extends AppCompatActivity {
                     int dayConcerned = value[1];
                     System.out.println("new steps BLE: day: "+dayConcerned+"steps: "+numberOfStepsUpdated);
                     updateNumberOfSteps(dayConcerned,numberOfStepsUpdated);
+
+
+                    // storage function
+                    //https://developer.android.com/guide/topics/data/data-storage.html#filesInternal
+                    /*
+                    String FILENAME = "steps_storage.txt";
+                    String string = ""+numberOfStepsUpdated+"-";
+                    try {
+                        // path of the storage files
+                        System.out.println("getFilesDir: "+getFilesDir());
+                        System.out.println("fileList: "+fileList().length+ "- "+ fileList()[0]);
+                        // create and write in a storage file
+                        FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                        fos.write(string.getBytes());
+                        fos.close();
+
+
+                        //Read data file
+                        FileInputStream fis = openFileInput("steps_storage.txt");
+                        InputStreamReader isr = new InputStreamReader(fis);
+                        BufferedReader bufferedReader = new BufferedReader(isr);
+                        StringBuilder sb = new StringBuilder();
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            sb.append(line);
+                        }
+                        System.out.println("steps_storage: "+sb.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e("Open storage file","Failed to open file storage",e);
+                    }
+                    */
+
+
                 }else if (value[0]==2){ //temperature info received
                     int temperatureUpdated = bitArrayToInt(value);
                     System.out.println("new Temperature BLE: "+temperatureUpdated);
