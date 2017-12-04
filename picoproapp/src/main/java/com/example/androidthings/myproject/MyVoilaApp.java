@@ -20,6 +20,7 @@ public class MyVoilaApp extends Application {
     private int presenceDetected  =0; // 0 if no human presence detected, 1 if detected
     //private int steps = 0;
     private int[] steps = {0,0,0,0,0,0,0}; //steps[0] is today, steps[6] is a week ago
+    private double[] kms = {0.,0.,0.,0.,0.,0.,0.}; //kms[0] is today, kms[6] is a week ago
     private int temperature = 0;
     private int logoWeather = 0;
     private int answerSelected = 0; // 0 if no question is asked, 1-7: according to the answer selected
@@ -176,7 +177,7 @@ public class MyVoilaApp extends Application {
         this.isAnsweringQuestion = isAnsweringQuestionValue;
     }
 
-    //STEPS
+    //STEPS & KMS
     /*
     public int getSteps() {
         return steps;
@@ -187,6 +188,9 @@ public class MyVoilaApp extends Application {
     }
     */
     //day is j-day number of steps
+    public void setDaySteps(int day,int stepsValue) {
+        this.steps[day]= stepsValue;
+    }
     public int getDaySteps(int day) {
         return steps[day];
     }
@@ -194,9 +198,16 @@ public class MyVoilaApp extends Application {
         return steps;
     }
 
-    public void setDaySteps(int day,int stepsValue) {
-        this.steps[day]= stepsValue;
+    public void setDayKms(int day,double kmsValue) {
+        this.kms[day]= kmsValue;
     }
+    public double getDayKms(int day) {
+        return kms[day];
+    }
+    public double[] getAllKms() {
+        return kms;
+    }
+
 
     // LOGO WEATHER
     public int getLogoWeather() {

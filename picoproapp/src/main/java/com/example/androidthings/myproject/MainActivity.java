@@ -68,7 +68,27 @@ public class MainActivity extends AppCompatActivity {
         return indexLogoWeatherCorrespondance[indexLogo];
     }
 
-    Animation animationGraph;
+    Animation animationGraphIn;
+    Animation animationGraphOut;
+
+    public void switchView(View view1, View view2, String text1, String text2){
+        TextView textViewGraphTitle = (TextView) findViewById(R.id.textViewGraphTitle);
+        animationGraphIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        animationGraphOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        view1.postDelayed(new Runnable(){
+            @Override
+            public void run()
+            {
+                view1.startAnimation(animationGraphOut);
+                view1.setVisibility(View.INVISIBLE);
+                view2.setVisibility(View.VISIBLE);
+                textViewGraphTitle.setText(text2);
+                view2.startAnimation(animationGraphIn);
+                switchView(view2,view1,text2,text1);
+            }
+        }, 30000);
+
+    }
 
 
     private Handler handler = new Handler();
@@ -85,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Steps
         int[] allSteps = ((MyVoilaApp) this.getApplication()).getAllSteps();
+        double[] allKms = ((MyVoilaApp) this.getApplication()).getAllKms();
+
 
         //DEMO PURPOSE
         int partOfTheDay = ((MyVoilaApp) this.getApplication()).getPartOfTheDay();
@@ -138,9 +160,12 @@ public class MainActivity extends AppCompatActivity {
         imageViewWeather.setImageResource(RDrawableIcon);
 
         //Graph
-        animationGraph = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        GraphView graph = (GraphView) findViewById(R.id.graphSteps);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+        GraphView graphKms = (GraphView) findViewById(R.id.graphKms);
+        graphKms.setVisibility(graphKms.INVISIBLE);
+
+        animationGraphIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        GraphView graphSteps = (GraphView) findViewById(R.id.graphSteps);
+        LineGraphSeries<DataPoint> seriesSteps = new LineGraphSeries<>(new DataPoint[] {
                 new DataPoint(0, allSteps[6]),
                 new DataPoint(1, allSteps[5]),
                 new DataPoint(2, allSteps[4]),
@@ -149,9 +174,25 @@ public class MainActivity extends AppCompatActivity {
                 new DataPoint(5, allSteps[1]),
                 new DataPoint(6, allSteps[0])
         });
-        series.setDrawDataPoints(true);
-        graph.addSeries(series);
-        graph.startAnimation(animationGraph);
+        seriesSteps.setDrawDataPoints(true);
+        graphSteps.addSeries(seriesSteps);
+        graphSteps.startAnimation(animationGraphIn);
+
+
+
+        LineGraphSeries<DataPoint> seriesKms = new LineGraphSeries<>(new DataPoint[] {
+                new DataPoint(0, allKms[6]),
+                new DataPoint(1, allKms[5]),
+                new DataPoint(2, allKms[4]),
+                new DataPoint(3, allKms[3]),
+                new DataPoint(4, allKms[2]),
+                new DataPoint(5, allKms[1]),
+                new DataPoint(6, allKms[0])
+        });
+        seriesKms.setDrawDataPoints(true);
+        graphKms.addSeries(seriesKms);
+
+        switchView(graphSteps,graphKms,"Number of steps for the past 7 days","Number of Kms for the past 7 days");
 
 
     }
@@ -372,6 +413,10 @@ public class MainActivity extends AppCompatActivity {
         ((MyVoilaApp) this.getApplication()).setDaySteps(dayConcerned,newNumber);
         //textViewNewSteps.setText(newNumber+" Steps");
     }
+    public void updateNumberOfKms(int dayConcerned, int newNumber){
+        ((MyVoilaApp) this.getApplication()).setDayKms(dayConcerned,newNumber/10.);
+        //textViewNewSteps.setText(newNumber+" Steps");
+    }
     public void updateTemperature(int newTemp){
         ((MyVoilaApp) this.getApplication()).setTemperature(newTemp);
     }
@@ -407,8 +452,47 @@ public class MainActivity extends AppCompatActivity {
         public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
             if (CustomProfile.WRITE_COUNTER.equals(characteristic.getUuid())) {
                 Log.i(TAG, "Write Output Characteristic");
+                if(value[0]==0){ // steps info received
+                    int numberOfKmsUpdated = bitArrayToInt(value);
+                    int dayConcerned = value[1];
+                    System.out.println("new Kms BLE: day: "+dayConcerned+"Kms: "+numberOfKmsUpdated);
+                    updateNumberOfKms(dayConcerned,numberOfKmsUpdated);
 
-                if(value[0]==1){ // steps info received
+
+                    // storage function
+                    //https://developer.android.com/guide/topics/data/data-storage.html#filesInternal
+                    /*
+                    String FILENAME = "steps_storage.txt";
+                    String string = ""+numberOfStepsUpdated+"-";
+                    try {
+                        // path of the storage files
+                        System.out.println("getFilesDir: "+getFilesDir());
+                        System.out.println("fileList: "+fileList().length+ "- "+ fileList()[0]);
+                        // create and write in a storage file
+                        FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                        fos.write(string.getBytes());
+                        fos.close();
+
+
+                        //Read data file
+                        FileInputStream fis = openFileInput("steps_storage.txt");
+                        InputStreamReader isr = new InputStreamReader(fis);
+                        BufferedReader bufferedReader = new BufferedReader(isr);
+                        StringBuilder sb = new StringBuilder();
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            sb.append(line);
+                        }
+                        System.out.println("steps_storage: "+sb.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e("Open storage file","Failed to open file storage",e);
+                    }
+                    */
+
+
+                }
+                else if(value[0]==1){ // steps info received
                     int numberOfStepsUpdated = bitArrayToInt(value);
                     int dayConcerned = value[1];
                     System.out.println("new steps BLE: day: "+dayConcerned+"steps: "+numberOfStepsUpdated);
