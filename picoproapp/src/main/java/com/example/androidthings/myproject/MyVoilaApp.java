@@ -49,6 +49,11 @@ public class MyVoilaApp extends Application {
         return indexLogoWeatherCorrespondance;
     }
 
+
+    //TEMP DEMO PURPOSE
+    public String tempHour="15:";
+    public double tempMin=10.;
+
     //USERNAME
     public String getUsrname() {
         return username;
@@ -104,6 +109,34 @@ public class MyVoilaApp extends Application {
         }
         else if (partOfTheDay==3){
             indexEveningQuestion+=1;
+        }
+    }
+    public int returnSizeQuestionSet(){
+        if (partOfTheDay==1){
+            return questionsMorning.size();
+        }
+        else if (partOfTheDay==2){
+            return questionsAfternoon.size();
+        }
+        else if (partOfTheDay==3){
+            return questionsEvening.size();
+        }else{
+            return questionsEvening.size();
+        }
+    }
+
+    public double getPercentageKnowledge(){
+        if (partOfTheDay==1){
+            return 100* indexMorningQuestion/ questionsMorning.size();
+        }
+        else if (partOfTheDay==2){
+            return 100* (indexMorningQuestion+indexAfternoonQuestion)/ (questionsMorning.size()+questionsAfternoon.size());
+        }
+        else if (partOfTheDay==3){
+            return 100* (indexMorningQuestion+indexAfternoonQuestion+indexEveningQuestion)/ (questionsMorning.size()+questionsAfternoon.size()+questionsEvening.size());
+        }else{
+            return 100* (indexMorningQuestion+indexAfternoonQuestion+indexEveningQuestion)/ (questionsMorning.size()+questionsAfternoon.size()+questionsEvening.size());
+
         }
     }
 

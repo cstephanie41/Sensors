@@ -51,6 +51,24 @@ public class SleepingMode extends AppCompatActivity {
         });
         valueAnimatorGoodNight.start();
 
+        //TEMP CLock
+        //TEMP Clock: DEMO PURPOSE
+        TextView textViewTempClock = (TextView) findViewById(R.id.textViewTempClock);
+        textViewTempClock.setText(((MyVoilaApp) this.getApplication()).tempHour+((int) ((MyVoilaApp) this.getApplication()).tempMin));
+
+        ValueAnimator valueAnimatorClock = ValueAnimator.ofFloat(0f, 1f);
+        valueAnimatorClock.setDuration(6000);
+        valueAnimatorClock.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                TextView textViewTempClock = (TextView) findViewById(R.id.textViewTempClock);
+                float alpha = (float) animation.getAnimatedValue();
+                textViewTempClock.setAlpha(alpha);
+            }
+        });
+        valueAnimatorClock.start();
+
+        /*
         ValueAnimator valueAnimatorClock = ValueAnimator.ofFloat(0f, 1f);
         valueAnimatorClock.setDuration(6000);
         valueAnimatorClock.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -62,6 +80,8 @@ public class SleepingMode extends AppCompatActivity {
             }
         });
         valueAnimatorClock.start();
+        */
+
 
     }
 

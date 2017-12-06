@@ -2,6 +2,7 @@ package com.example.androidthings.myproject;
 
 import android.app.AlarmManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.icu.text.SymbolTable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,8 +32,12 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.ParcelUuid;
 
+import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.android.things.pio.PeripheralManagerService;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.ValueDependentColor;
+import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -72,7 +77,11 @@ public class MainActivity extends AppCompatActivity {
     Animation animationGraphOut;
 
 
-    public void switchView(View view1, View view2, String text1, String text2){
+    public void updateTempMin(double TempValue){
+        ((MyVoilaApp) this.getApplication()).tempMin = TempValue;
+    }
+
+    public void switchView(View view1, View view2, String text1, String text2,String tempHourValue,double tempMinValue){
         TextView textViewGraphTitle = (TextView) findViewById(R.id.textViewGraphTitle);
         animationGraphIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         animationGraphOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
@@ -80,14 +89,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run()
             {
+                double newTempMin = tempMinValue+0.25;
+                updateTempMin(newTempMin);
+                TextView textViewTempClock = (TextView) findViewById(R.id.textViewTempClock);
+                textViewTempClock.setText(tempHourValue+((int) newTempMin));
+                System.out.println("tempMin:"+newTempMin);
                 view1.startAnimation(animationGraphOut);
                 view1.setVisibility(View.INVISIBLE);
                 view2.setVisibility(View.VISIBLE);
                 textViewGraphTitle.setText(text2);
                 view2.startAnimation(animationGraphIn);
-                switchView(view2,view1,text2,text1);
+                switchView(view2,view1,text2,text1,tempHourValue,newTempMin);
             }
-        }, 8000);
+        }, 15000);
 
     }
 
@@ -113,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         //DEMO PURPOSE
         int partOfTheDay = ((MyVoilaApp) this.getApplication()).getPartOfTheDay();
+
 
         if(sensorsActivated==0){
             myBoardApp.setActivity(this);
@@ -162,12 +177,64 @@ public class MainActivity extends AppCompatActivity {
         int RDrawableIcon = whichWeatherLogo(currentIndexLogoWeather);
         imageViewWeather.setImageResource(RDrawableIcon);
 
+        //TEMP Clock
+        if (partOfTheDay==1){
+            ((MyVoilaApp) this.getApplication()).tempHour="09:";
+        } else if (partOfTheDay==2){
+            ((MyVoilaApp) this.getApplication()).tempHour="15:";
+        } else if (partOfTheDay==3){
+            ((MyVoilaApp) this.getApplication()).tempHour="19:";
+        } else if (partOfTheDay==4){
+            ((MyVoilaApp) this.getApplication()).tempHour="22:";
+        }
+        TextView textViewTempClock = (TextView) findViewById(R.id.textViewTempClock);
+        textViewTempClock.setText(((MyVoilaApp) this.getApplication()).tempHour+((int) ((MyVoilaApp) this.getApplication()).tempMin));
+
         //Graph
         GraphView graphKms = (GraphView) findViewById(R.id.graphKms);
         graphKms.setVisibility(graphKms.INVISIBLE);
 
         animationGraphIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        //GraphView graphSteps = (GraphView) findViewById(R.id.graphSteps);
+
+        //TEMP
         GraphView graphSteps = (GraphView) findViewById(R.id.graphSteps);
+        BarGraphSeries<DataPoint> seriesSteps = new BarGraphSeries<>(new DataPoint[] {
+                new DataPoint(1, allSteps[6]),
+                new DataPoint(2, allSteps[5]),
+                new DataPoint(3, allSteps[4]),
+                new DataPoint(4, allSteps[3]),
+                new DataPoint(5, allSteps[2]),
+                new DataPoint(6, allSteps[1]),
+                new DataPoint(7, allSteps[0])
+        });
+        graphSteps.addSeries(seriesSteps);
+        graphSteps.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL);
+
+
+        seriesSteps.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+            @Override
+            public int get(DataPoint data) {
+                if (data.getX()<7){
+                    return Color.rgb((int) 255/4, (int) Math.abs(255/6), 100);
+                }else{
+                    return Color.rgb((int) 255/8, (int) Math.abs(255/2), 100);
+                }
+                //return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
+            }
+        });
+
+        seriesSteps.setSpacing(20);
+
+// draw values on top
+        seriesSteps.setDrawValuesOnTop(true);
+        seriesSteps.setValuesOnTopColor(Color.BLACK);
+        seriesSteps.setValuesOnTopSize(16);
+        graphSteps.startAnimation(animationGraphIn);
+
+
+
+        /*
         LineGraphSeries<DataPoint> seriesSteps = new LineGraphSeries<>(new DataPoint[] {
                 new DataPoint(0, allSteps[6]),
                 new DataPoint(1, allSteps[5]),
@@ -194,9 +261,46 @@ public class MainActivity extends AppCompatActivity {
         });
         seriesKms.setDrawDataPoints(true);
         graphKms.addSeries(seriesKms);
+        */
 
-        switchView(graphSteps,graphKms,"Number of steps for the past 7 days","Number of Kms for the past 7 days");
+        BarGraphSeries<DataPoint> seriesKms = new BarGraphSeries<>(new DataPoint[] {
+                new DataPoint(1, allKms[6]),
+                new DataPoint(2, allKms[5]),
+                new DataPoint(3, allKms[4]),
+                new DataPoint(4, allKms[3]),
+                new DataPoint(5, allKms[2]),
+                new DataPoint(6, allKms[1]),
+                new DataPoint(7, allKms[0])
+        });
+        graphKms.addSeries(seriesKms);
+        graphKms.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL);
 
+
+        seriesKms.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+            @Override
+            public int get(DataPoint data) {
+                if (data.getX()<7){
+                    return Color.rgb((int) 255/4, (int) Math.abs(255/6), 100);
+                }else{
+                    return Color.rgb((int) 255/8, (int) Math.abs(255/2), 100);
+                }
+                //return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
+            }
+        });
+
+        seriesKms.setSpacing(20);
+
+// draw values on top
+        seriesKms.setDrawValuesOnTop(true);
+        seriesKms.setValuesOnTopColor(Color.BLACK);
+        seriesKms.setValuesOnTopSize(18);
+
+
+        switchView(graphSteps,graphKms,"Number of steps for the past 7 days","Number of Kms for the past 7 days",((MyVoilaApp) this.getApplication()).tempHour,((MyVoilaApp) this.getApplication()).tempMin);
+        //Progress Bar
+        DonutProgress donutProgress = (DonutProgress) findViewById(R.id.donut_progress);
+        double percentKnowledge = ((MyVoilaApp) this.getApplication()).getPercentageKnowledge();
+        donutProgress.setDonut_progress(""+(int) percentKnowledge);
 
     }
 

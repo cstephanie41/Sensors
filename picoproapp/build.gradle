@@ -46,4 +46,5 @@ dependencies {
     provided 'com.google.android.things:androidthings:0.4-devpreview'
     compile files('libs/GraphView-4.0.1')
     implementation files('libs/GraphView-4.0.1.jar')
+    compile 'com.github.lzyzsd:circleprogress:1.2.1'
 }

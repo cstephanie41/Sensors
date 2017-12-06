@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 
+import com.github.lzyzsd.circleprogress.DonutProgress;
+
 public class AskQuestion extends AppCompatActivity {
 
     Animation animationButton;
@@ -58,7 +60,19 @@ public class AskQuestion extends AppCompatActivity {
         //TEMP Put 0 instead
         ((MyVoilaApp) this.getApplication()).setAnswerSelected(1);
 
+        //TEMP Clock: DEMO PURPOSE
+        TextView textViewTempClock = (TextView) findViewById(R.id.textViewTempClock);
+        textViewTempClock.setText(((MyVoilaApp) this.getApplication()).tempHour+((int) ((MyVoilaApp) this.getApplication()).tempMin));
+
         animationButton = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
+
+        //DEMO PURPOSE
+        int partOfTheDay = ((MyVoilaApp) this.getApplication()).getPartOfTheDay();
+
+        //Progress Bar
+        DonutProgress donutProgress = (DonutProgress) findViewById(R.id.donut_progress);
+        double percentKnowledge = ((MyVoilaApp) this.getApplication()).getPercentageKnowledge();
+        donutProgress.setDonut_progress(""+(int) percentKnowledge);
     }
 
 
