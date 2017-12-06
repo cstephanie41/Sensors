@@ -93,6 +93,7 @@ public class SensorsCombined extends SimplePicoPro{
         //if activated, turn off lights
         if (irTriggered ==1) {
             System.out.println(answerSelected);
+            System.out.println("IR triggered, isAnsweringQuestion: "+isAnsweringQuestion);
             if (sleeping == 0){ // No waving hand is accepted if the user is sleeping
                 if (isAnsweringQuestion==1 && answerSelected >0){ //If the device asks a question to the user
                     confirmAnswer();
@@ -104,7 +105,6 @@ public class SensorsCombined extends SimplePicoPro{
                     if (partOfTheDay==1 || partOfTheDay==2 || partOfTheDay==3){
                         popQuestion(randomQuestion,"Question");
                         updateIndexQuestions();
-
                     }
 
                     /*

@@ -17,6 +17,8 @@ import java.util.List;
 
 public class MyVoilaApp extends Application {
 
+    private String username="";
+
     private int presenceDetected  =0; // 0 if no human presence detected, 1 if detected
     //private int steps = 0;
     private int[] steps = {0,0,0,0,0,0,0}; //steps[0] is today, steps[6] is a week ago
@@ -45,6 +47,15 @@ public class MyVoilaApp extends Application {
 
     public int[] getWeatherLogoCorrespondance() {
         return indexLogoWeatherCorrespondance;
+    }
+
+    //USERNAME
+    public String getUsrname() {
+        return username;
+    }
+
+    public void setUsername(String usernameValue) {
+        this.username= usernameValue;
     }
 
     //QUESTIONS

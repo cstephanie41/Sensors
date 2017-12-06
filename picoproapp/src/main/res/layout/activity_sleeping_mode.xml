@@ -7,37 +7,35 @@
     android:background="@android:color/black"
     tools:context="com.example.androidthings.myproject.SleepingMode">
 
-<TextView
-    android:id="@+id/textViewGoodNight"
-    android:layout_width="253dp"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:gravity="center_vertical|center_horizontal|center"
-    android:text="Good Night Bjorn !"
-    android:textColor="@android:color/darker_gray"
-    android:textSize="36sp"
-    android:textStyle="bold"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/textViewGoodNight"
+            android:layout_width="253dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical|center_horizontal|center"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <TextClock
-    android:id="@+id/textClock"
-    android:layout_width="300dp"
-    android:layout_height="300dp"
-    android:alpha="0.1"
-    android:background="@android:color/transparent"
-    android:gravity="center_vertical|center_horizontal"
-    android:textColor="@android:color/darker_gray"
-    android:textSize="54sp"
-    android:textStyle="bold"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/textClock"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:background="@android:color/transparent"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="54sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

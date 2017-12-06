@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -19,6 +21,23 @@ public class SleepingMode extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sleeping_mode);
+
+        String username = ((MyVoilaApp) this.getApplication()).getUsrname();
+
+        TextView textViewGoodNight = (TextView) findViewById(R.id.textViewGoodNight);
+        textViewGoodNight.setText("Good Night "+username+" !");
+
+        /* OTHER WAY TO ANIMATE
+        Animation animationOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        textViewGoodNight.startAnimation(animationOut);
+        textViewGoodNight.setVisibility(View.INVISIBLE);
+
+        TextView textClock = (TextView) findViewById(R.id.textClock);
+        Animation animationIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        textClock.startAnimation(animationIn);
+        */
+
+
 
         ValueAnimator valueAnimatorGoodNight = ValueAnimator.ofFloat(1f, 0f);
         valueAnimatorGoodNight.setDuration(3000);
@@ -43,6 +62,7 @@ public class SleepingMode extends AppCompatActivity {
             }
         });
         valueAnimatorClock.start();
+
     }
 
     public void Toggle(View view) {

@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     Animation animationGraphIn;
     Animation animationGraphOut;
 
+
     public void switchView(View view1, View view2, String text1, String text2){
         TextView textViewGraphTitle = (TextView) findViewById(R.id.textViewGraphTitle);
         animationGraphIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 view2.startAnimation(animationGraphIn);
                 switchView(view2,view1,text2,text1);
             }
-        }, 30000);
+        }, 8000);
 
     }
 
@@ -102,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
         int sensorsActivated = ((MyVoilaApp) this.getApplication()).getSensorsStatus();
         int bluetoothActivated = ((MyVoilaApp) this.getApplication()).getBluetoothStatus();
+
+
 
         //Steps
         int[] allSteps = ((MyVoilaApp) this.getApplication()).getAllSteps();
@@ -404,9 +407,25 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
-    public void reloadMainActivity(){
-        Intent intentToMain = new Intent(this, MainActivity.class);
-        startActivity(intentToMain);
+    public static String getCharFromThreeValues(byte b1,byte b2, byte b3){
+        int res = (int) (b1*pow(8,2)+b2*pow(8,1)+b3*pow(8,0));
+        return Character.toString ((char) res);
+    }
+    public static String getUsernameFromByteArray(byte[] value){
+        String result = "";
+        for (int i=1;i<value.length;i+=3){
+           result += getCharFromThreeValues(value[i],value[i+1],value[i+2]);
+        }
+        return result;
+    }
+    public void reloadMainActivityIfPossible(){
+        int sleeping= ((MyVoilaApp) this.getApplication()).getSleepingStatus();
+        int isAnsweringQuestion = ((MyVoilaApp) this.getApplication()).getIsAnsweringQuestion();
+        System.out.println("sleeping: "+sleeping+",isAnsweringQuestion: "+isAnsweringQuestion);
+        if (sleeping==0 && isAnsweringQuestion ==0){
+            Intent intentToMain = new Intent(this, MainActivity.class);
+            startActivity(intentToMain);
+        }
     }
 
     public void updateNumberOfSteps(int dayConcerned, int newNumber){
@@ -428,6 +447,9 @@ public class MainActivity extends AppCompatActivity {
         if (newPart==4){
             ((MyVoilaApp) this.getApplication()).initializeQuestions();
         }
+    }
+    public void updateUsername(String usernameValue){
+        ((MyVoilaApp) this.getApplication()).setUsername(usernameValue);
     }
 
     /**
@@ -452,45 +474,11 @@ public class MainActivity extends AppCompatActivity {
         public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
             if (CustomProfile.WRITE_COUNTER.equals(characteristic.getUuid())) {
                 Log.i(TAG, "Write Output Characteristic");
-                if(value[0]==0){ // steps info received
+                if(value[0]==0){ // kms info received
                     int numberOfKmsUpdated = bitArrayToInt(value);
                     int dayConcerned = value[1];
                     System.out.println("new Kms BLE: day: "+dayConcerned+"Kms: "+numberOfKmsUpdated);
                     updateNumberOfKms(dayConcerned,numberOfKmsUpdated);
-
-
-                    // storage function
-                    //https://developer.android.com/guide/topics/data/data-storage.html#filesInternal
-                    /*
-                    String FILENAME = "steps_storage.txt";
-                    String string = ""+numberOfStepsUpdated+"-";
-                    try {
-                        // path of the storage files
-                        System.out.println("getFilesDir: "+getFilesDir());
-                        System.out.println("fileList: "+fileList().length+ "- "+ fileList()[0]);
-                        // create and write in a storage file
-                        FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-                        fos.write(string.getBytes());
-                        fos.close();
-
-
-                        //Read data file
-                        FileInputStream fis = openFileInput("steps_storage.txt");
-                        InputStreamReader isr = new InputStreamReader(fis);
-                        BufferedReader bufferedReader = new BufferedReader(isr);
-                        StringBuilder sb = new StringBuilder();
-                        String line;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            sb.append(line);
-                        }
-                        System.out.println("steps_storage: "+sb.toString());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e("Open storage file","Failed to open file storage",e);
-                    }
-                    */
-
-
                 }
                 else if(value[0]==1){ // steps info received
                     int numberOfStepsUpdated = bitArrayToInt(value);
@@ -543,8 +531,14 @@ public class MainActivity extends AppCompatActivity {
                     int partOfTheDayUpdated = bitArrayToInt(value);
                     System.out.println("new part of the day BLE: "+partOfTheDayUpdated);
                     updatePartOfTheDay(partOfTheDayUpdated);
+                }else if (value[0]==5){ //username info received //DEMO PURPOSE
+                    String username = getUsernameFromByteArray(value);
+                    System.out.println("new UserName BLE: "+username);
+                    updateUsername(username);
                 }
-                reloadMainActivity();
+
+                reloadMainActivityIfPossible(); //Possible only if not sleeping and not answering question
+
 
                 // use it later for stockage
                 //CustomProfile.setOutputValue(value);
