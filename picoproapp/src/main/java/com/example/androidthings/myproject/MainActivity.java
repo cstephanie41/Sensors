@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 updateTempMin(newTempMin);
                 TextView textViewTempClock = (TextView) findViewById(R.id.textViewTempClock);
                 textViewTempClock.setText(tempHourValue+((int) newTempMin));
-                System.out.println("tempMin:"+newTempMin);
                 view1.startAnimation(animationGraphOut);
                 view1.setVisibility(View.INVISIBLE);
                 view2.setVisibility(View.VISIBLE);
@@ -217,9 +216,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public int get(DataPoint data) {
                 if (data.getX()<7){
-                    return Color.rgb((int) 255/4, (int) Math.abs(255/6), 100);
+                    return Color.rgb(183, 183, 183);
                 }else{
-                    return Color.rgb((int) 255/8, (int) Math.abs(255/2), 100);
+                    return Color.rgb(82,145, 234);
                 }
                 //return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
             }
@@ -281,9 +280,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public int get(DataPoint data) {
                 if (data.getX()<7){
-                    return Color.rgb((int) 255/4, (int) Math.abs(255/6), 100);
+                    return Color.rgb(183, 183, 183);
                 }else{
-                    return Color.rgb((int) 255/8, (int) Math.abs(255/2), 100);
+                    return Color.rgb(82,145, 234);
                 }
                 //return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
             }
@@ -582,7 +581,7 @@ public class MainActivity extends AppCompatActivity {
                 if(value[0]==0){ // kms info received
                     int numberOfKmsUpdated = bitArrayToInt(value);
                     int dayConcerned = value[1];
-                    System.out.println("new Kms BLE: day: "+dayConcerned+"Kms: "+numberOfKmsUpdated);
+                    System.out.println("new Kms BLE: day: "+dayConcerned+" Kms: "+numberOfKmsUpdated);
                     updateNumberOfKms(dayConcerned,numberOfKmsUpdated);
                 }
                 else if(value[0]==1){ // steps info received

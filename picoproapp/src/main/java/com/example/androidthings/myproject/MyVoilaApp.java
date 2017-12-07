@@ -5,6 +5,7 @@ import android.app.Application;
 //package com.voila.voila.voilapicopro;
 
 import android.app.Application;
+import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,12 +38,15 @@ public class MyVoilaApp extends Application {
     private int partOfTheDay =2; //1 morning, 2 afternoon, 3 evening, 4 night
 
 
-    private List<String> questionsMorning = Arrays.asList("How did you sleep last night?", "How well did you sleep?","How would you rate your sleep?");
-    private List<String> questionsAfternoon = Arrays.asList("How stressed do you feel today","How do you rate your current mood?");
-    private List<String> questionsEvening = Arrays.asList("How was your day in general?", "How much sport did you do today?");
+    private List<Pair<String,String>> questionsMorning = Arrays.asList(new Pair<>("How did you sleep last night?","quality"),new Pair<>("How well did you sleep?","quality"),new Pair<>("How would you rate your sleep?","quality"));
+    private List<Pair<String,String>> questionsAfternoon = Arrays.asList(new Pair<>("How stressed do you feel today","quality"),new Pair<>("How do you rate your current mood?","quality"));
+    private List<Pair<String,String>> questionsEvening = Arrays.asList(new Pair<>("How was your day in general?","quality"),new Pair<>("How much sport did you do today?","quantity_gym"));
     private int indexMorningQuestion = 0;
     private int indexAfternoonQuestion = 0;
     private int indexEveningQuestion = 0;
+    private String[] answerFeedback_quality = {"Awesome","Great","Very Good","Good","Bad","Very Bad","Horrible"};
+    private String[] answerFeedback_quantity_gym = {"2h+","1h30-2h","1h-1h30","45min-1h","30-45min","15-30min","0"};
+    public int isTheMorningQuestion =0;
 
     private static int[] indexLogoWeatherCorrespondance = {R.drawable.weather01d,R.drawable.weather01n,R.drawable.weather02d,R.drawable.weather02n,R.drawable.weather03d,R.drawable.weather03n,R.drawable.weather04d,R.drawable.weather04n,R.drawable.weather09d,R.drawable.weather09n,R.drawable.weather10d,R.drawable.weather10n,R.drawable.weather11d,R.drawable.weather11n,R.drawable.weather13d,R.drawable.weather13n,R.drawable.weather50d,R.drawable.weather50n};
 
@@ -90,13 +94,28 @@ public class MyVoilaApp extends Application {
 
     public String getRandomQuestion(){
         if (partOfTheDay==1){
-            return questionsMorning.get(indexMorningQuestion);
+            return questionsMorning.get(indexMorningQuestion).first;
         }
         else if (partOfTheDay==2){
-            return questionsAfternoon.get(indexAfternoonQuestion);
+            return questionsAfternoon.get(indexAfternoonQuestion).first;
         }
         else if (partOfTheDay==3){
-            return questionsEvening.get(indexEveningQuestion);
+            return questionsEvening.get(indexEveningQuestion).first;
+        }
+        else{
+            return "error Get Question";
+        }
+    }
+
+    public String getQuestionCategory(){ //Quantity(_gym, ...) or Quality
+        if (partOfTheDay==1){
+            return questionsMorning.get(indexMorningQuestion).second;
+        }
+        else if (partOfTheDay==2){
+            return questionsAfternoon.get(indexAfternoonQuestion).second;
+        }
+        else if (partOfTheDay==3){
+            return questionsEvening.get(indexEveningQuestion).second;
         }
         else{
             return "error Get Question";
@@ -158,6 +177,49 @@ public class MyVoilaApp extends Application {
         }
         System.out.println("doSomeQuestionRemain: "+ !result);
         return !result;
+    }
+
+    public String getAnswerFeedback(String categoryValue){
+        String category = getQuestionCategory();
+        if (categoryValue == "quantity_gym"){
+            return answerFeedback_quantity_gym[answerSelected-1];
+        }else if(categoryValue == "quality"){
+            return answerFeedback_quality[answerSelected-1];
+        }
+        return "error category feedback" ;
+    }
+
+    public String getAnswerFeedback(){
+        System.out.println("morning:"+indexMorningQuestion+"-"+questionsMorning.size());
+        System.out.println("after:"+indexAfternoonQuestion+"-"+questionsAfternoon.size());
+        System.out.println("evening:"+indexEveningQuestion+"-"+questionsEvening.size());
+        String category = getQuestionCategory();
+        if (category == "quantity_gym"){
+            return answerFeedback_quantity_gym[answerSelected-1];
+        }else if(category == "quality"){
+            return answerFeedback_quality[answerSelected-1];
+        }
+        return "error category feedback" ;
+    }
+
+    public int getColorFeedback(){
+        if (answerSelected==1){
+            return R.color.blue_voila;
+        } else if (answerSelected==2){
+            return R.color.button2;
+        } else if (answerSelected==3){
+            return R.color.button3;
+        } else if (answerSelected==4){
+            return R.color.button4;
+        } else if (answerSelected==5){
+            return R.color.button5;
+        } else if (answerSelected==6){
+            return R.color.button6;
+        } else if (answerSelected==7){
+            return R.color.button7;
+        } else {
+            return 0;
+        }
     }
 
     //ASK QUESTION

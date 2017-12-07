@@ -58,7 +58,7 @@ public class WakeUpMode extends AppCompatActivity {
         System.out.println("Sleep Duration: "+ sleepDuration+" ms");
         System.out.println("Sleep Duration: "+ SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min, "+ SleepElapsedSeconds+" s");
 
-        ((MyVoilaApp) this.getApplication()).setIsAnsweringQuestion(0);
+        ((MyVoilaApp) this.getApplication()).setIsAnsweringQuestion(1);
         ((MyVoilaApp) this.getApplication()).setQuestion("How did you sleep?");
         ((MyVoilaApp) this.getApplication()).setQuestionExtra("Sleep Duration: "+SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min");
 
@@ -73,6 +73,7 @@ public class WakeUpMode extends AppCompatActivity {
     }
 
     public void goToQuestionMorning(){
+        ((MyVoilaApp) this.getApplication()).isTheMorningQuestion = 1;
         Intent intentToAskQuestion = new Intent(this, AskQuestion.class);
         this.startActivity(intentToAskQuestion);
     }

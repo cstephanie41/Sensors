@@ -5,12 +5,12 @@
     <string name="number_of_steps">0 Steps</string>
     <string name="question_title"></string>
     <string name="question_extra"></string>
-    <string name="button1">1</string>
-    <string name="button2">2</string>
-    <string name="button3">3</string>
+    <string name="button1">7</string>
+    <string name="button2">6</string>
+    <string name="button3">5</string>
     <string name="button4">4</string>
-    <string name="button5">5</string>
-    <string name="button6">6</string>
-    <string name="button7">7</string>
+    <string name="button5">3</string>
+    <string name="button6">2</string>
+    <string name="button7">1</string>
     <string name="ble_sync_required">Please synchronize with your smartphone to start</string>
 </resources>

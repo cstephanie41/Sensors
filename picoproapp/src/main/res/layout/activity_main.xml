@@ -10,8 +10,8 @@
 
         <TextView
         android:id="@+id/textViewTemperature"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:background="@android:color/white"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/temperature"
@@ -36,7 +36,7 @@
 
     <TextView
         android:id="@+id/textViewSteps"
-        android:layout_width="150dp"
+        android:layout_width="180dp"
         android:layout_height="150dp"
         android:background="@android:color/white"
         android:gravity="center_vertical|center_horizontal"
@@ -103,23 +103,36 @@
         android:id="@+id/donut_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="36dp"
+        android:layout_marginEnd="24dp"
         custom:donut_progress="30"
         custom:layout_constraintBottom_toBottomOf="parent"
         custom:layout_constraintEnd_toEndOf="parent" />
 
-        <ImageView
-            android:id="@+id/imageViewWeather"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="@+id/textViewTemperature"
-            app:layout_constraintStart_toStartOf="@+id/textViewTemperature"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/weather01d" />
+    <ImageView
+        android:id="@+id/imageViewWeather"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="@+id/textViewTemperature"
+        app:layout_constraintStart_toStartOf="@+id/textViewTemperature"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/weather01d" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="250dp"
+        android:text="Today"
+        android:textColor="@color/blue_voila"
+        android:textStyle="bold"
+        custom:layout_constraintBottom_toBottomOf="parent"
+        custom:layout_constraintEnd_toEndOf="parent" />
 
 
-    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

@@ -9,6 +9,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.things.contrib.driver.adcv2x.Adcv2x;
 import com.google.android.things.pio.Gpio;
@@ -220,6 +221,12 @@ public abstract class SimplePicoPro extends SimpleBoard {
         int answerSelected = ((MyVoilaApp) activity.getApplication()).getAnswerSelected();
         return answerSelected;
     }
+    public int getIsTheMorningQuestion(){
+        return ((MyVoilaApp) activity.getApplication()).isTheMorningQuestion;
+    }
+    public void setIsTheMorningQuestion(int value){
+        ((MyVoilaApp) activity.getApplication()).isTheMorningQuestion=value;
+    }
     public void changeSelectedAnswer(){
         Animation animationButton = AnimationUtils.loadAnimation(activity, R.anim.anim_scale);
         //TODO over 7
@@ -232,9 +239,18 @@ public abstract class SimplePicoPro extends SimpleBoard {
         activity = ((MyVoilaApp) activity.getApplication()).currentActivity;
         ((MyVoilaApp) activity.getApplication()).setAnswerSelected(newAnswerSelected);
         System.out.println("new Answer selected: "+newAnswerSelected);
-        System.out.println(activity.getClass().getSimpleName());
+        System.out.println("current activity: " +activity.getClass().getSimpleName());
+
         Button button = (Button) activity.findViewById(R.id.button1-1+newAnswerSelected);
         button.startAnimation(animationButton);
+        TextView textViewFeedback = activity.findViewById(R.id.textViewFeedback);
+        if ( getIsTheMorningQuestion()==1){
+            textViewFeedback.setText(((MyVoilaApp) activity.getApplication()).getAnswerFeedback("quality"));
+            textViewFeedback.setTextColor(activity.getResources().getColor(((MyVoilaApp) activity.getApplication()).getColorFeedback()));
+        }else{
+            textViewFeedback.setText(((MyVoilaApp) activity.getApplication()).getAnswerFeedback());
+            textViewFeedback.setTextColor(activity.getResources().getColor(((MyVoilaApp) activity.getApplication()).getColorFeedback()));
+        }
 
     }
     public int getPartOfTheDay(){

@@ -19,7 +19,8 @@ public class SensorsCombined extends SimplePicoPro{
     long irTriggerTime = 0;
     Gpio morning = GPIO_39;
     Gpio afternoon = GPIO_37;
-    Gpio evening = GPIO_35;
+    //Gpio evening = GPIO_35;
+    Gpio evening = GPIO_33;
     Gpio off = GPIO_34;
     double timeValue=0;
 
@@ -89,6 +90,7 @@ public class SensorsCombined extends SimplePicoPro{
         int isAnsweringQuestion = isAnsweringQuestion();
         int answerSelected = getAnswerSelected();
         int partOfTheDay = getPartOfTheDay();
+        int isTheMorningQuestion = getIsTheMorningQuestion();
 
         //digitalWrite (off, LOW);
 
@@ -106,13 +108,20 @@ public class SensorsCombined extends SimplePicoPro{
                 if (isAnsweringQuestion==1 && answerSelected >0){ //If the device asks a question to the user
                     confirmAnswer();
                     lightOff();
+                    // update the index only when it is not the morning question
+                    if (isTheMorningQuestion==0){
+                        updateIndexQuestions();
+                    }else{
+                        setIsTheMorningQuestion(0);
+                    }
+
                 }
                 else if(isAnsweringQuestion==0 && answerSelected ==0 && doSomeQuestionRemain()){ // If the user wants to pop up a question
                     lightOn(2);
                     String randomQuestion = getRandomQuestion();
                     if (partOfTheDay==1 || partOfTheDay==2 || partOfTheDay==3){
                         popQuestion(randomQuestion,"Question");
-                        updateIndexQuestions();
+                        System.out.println("updateIndexQuestion called");
                     }
 
                     /*
@@ -169,7 +178,7 @@ public class SensorsCombined extends SimplePicoPro{
                 ToggleWakeUp();
             }else{
                 if (isAnsweringQuestion ==0){
-                    lightOn(2);
+                    lightOn(3);
                     ToggleSleep();
                 }
             }
@@ -240,7 +249,7 @@ public class SensorsCombined extends SimplePicoPro{
     // partOfTheDay : // 1 for morning // 2 for afternoon // 3 for evening
     public void lightOn(int partOfTheDay){
         digitalWrite (off, LOW);
-        if (partOfTheDay==1){digitalWrite(afternoon,LOW);digitalWrite(evening,LOW);digitalWrite(morning,HIGH);System.out.println("light on: morning");}
+        if (partOfTheDay==1){digitalWrite(evening,LOW);digitalWrite(afternoon,LOW);digitalWrite(morning,HIGH);System.out.println("light on: morning");}
         if (partOfTheDay==2){digitalWrite(morning,LOW);digitalWrite(evening,LOW);digitalWrite(afternoon,HIGH);System.out.println("light on: afternoon");}
         if (partOfTheDay==3){digitalWrite(morning,LOW);digitalWrite(afternoon,LOW);digitalWrite(evening,HIGH);System.out.println("light on: evening");}
     }
