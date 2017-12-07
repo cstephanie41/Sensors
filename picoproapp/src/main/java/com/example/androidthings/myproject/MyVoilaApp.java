@@ -39,14 +39,16 @@ public class MyVoilaApp extends Application {
 
 
     private List<Pair<String,String>> questionsMorning = Arrays.asList(new Pair<>("How did you sleep last night?","quality"),new Pair<>("How well did you sleep?","quality"),new Pair<>("How would you rate your sleep?","quality"));
-    private List<Pair<String,String>> questionsAfternoon = Arrays.asList(new Pair<>("How stressed do you feel today","quality"),new Pair<>("How do you rate your current mood?","quality"));
+    private List<Pair<String,String>> questionsAfternoon = Arrays.asList(new Pair<>("What is your level of stress today?","quality"),new Pair<>("How do you rate your current mood?","quality"));
     private List<Pair<String,String>> questionsEvening = Arrays.asList(new Pair<>("How was your day in general?","quality"),new Pair<>("How much sport did you do today?","quantity_gym"));
     private int indexMorningQuestion = 0;
     private int indexAfternoonQuestion = 0;
     private int indexEveningQuestion = 0;
     private String[] answerFeedback_quality = {"Awesome","Great","Very Good","Good","Bad","Very Bad","Horrible"};
-    private String[] answerFeedback_quantity_gym = {"2h+","1h30-2h","1h-1h30","45min-1h","30-45min","15-30min","0"};
-    public int isTheMorningQuestion =0;
+    private String[] answerFeedback_quantity_gym = {"2h+","1h30-2h","1h-1h30","45min-1h","30-45min","15-30min","0min"};
+    public int isASpecialQuestion =0; // Morning question or NewQuestion sent by the user
+    private int newQuestionIsSent = 0;
+    private String newQuestionToAsk = "";
 
     private static int[] indexLogoWeatherCorrespondance = {R.drawable.weather01d,R.drawable.weather01n,R.drawable.weather02d,R.drawable.weather02n,R.drawable.weather03d,R.drawable.weather03n,R.drawable.weather04d,R.drawable.weather04n,R.drawable.weather09d,R.drawable.weather09n,R.drawable.weather10d,R.drawable.weather10n,R.drawable.weather11d,R.drawable.weather11n,R.drawable.weather13d,R.drawable.weather13n,R.drawable.weather50d,R.drawable.weather50n};
 
@@ -180,7 +182,9 @@ public class MyVoilaApp extends Application {
     }
 
     public String getAnswerFeedback(String categoryValue){
-        String category = getQuestionCategory();
+        System.out.println("morning:"+indexMorningQuestion+"-"+questionsMorning.size());
+        System.out.println("afternoon:"+indexAfternoonQuestion+"-"+questionsAfternoon.size());
+        System.out.println("evening:"+indexEveningQuestion+"-"+questionsEvening.size());
         if (categoryValue == "quantity_gym"){
             return answerFeedback_quantity_gym[answerSelected-1];
         }else if(categoryValue == "quality"){
@@ -204,7 +208,7 @@ public class MyVoilaApp extends Application {
 
     public int getColorFeedback(){
         if (answerSelected==1){
-            return R.color.blue_voila;
+            return R.color.button1;
         } else if (answerSelected==2){
             return R.color.button2;
         } else if (answerSelected==3){
@@ -220,6 +224,19 @@ public class MyVoilaApp extends Application {
         } else {
             return 0;
         }
+    }
+
+    public void setNewQuestionIsSent(int value){
+        newQuestionIsSent = value;
+    }
+    public int getNewQuestionIsSent(){
+        return newQuestionIsSent;
+    }
+    public void setNewQuestionToAsk(String valueString){
+        newQuestionToAsk = valueString;
+    }
+    public String getNewQuestionToAsk(){
+        return newQuestionToAsk;
     }
 
     //ASK QUESTION

@@ -81,6 +81,14 @@ public class MainActivity extends AppCompatActivity {
         ((MyVoilaApp) this.getApplication()).tempMin = TempValue;
     }
 
+    /*
+    public void goToNewQuestionToAsk(){
+        if (((MyVoilaApp) this.getApplication()).getNewQuestionIsSent()==1){
+
+        }
+    }
+    */
+
     public void switchView(View view1, View view2, String text1, String text2,String tempHourValue,double tempMinValue){
         TextView textViewGraphTitle = (TextView) findViewById(R.id.textViewGraphTitle);
         animationGraphIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
@@ -89,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run()
             {
+                //goToNewQuestionToAsk();
                 double newTempMin = tempMinValue+0.25;
                 updateTempMin(newTempMin);
                 TextView textViewTempClock = (TextView) findViewById(R.id.textViewTempClock);
@@ -185,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (partOfTheDay==3){
             ((MyVoilaApp) this.getApplication()).tempHour="19:";
         } else if (partOfTheDay==4){
-            ((MyVoilaApp) this.getApplication()).tempHour="22:";
+            ((MyVoilaApp) this.getApplication()).tempHour="23:";
         }
         TextView textViewTempClock = (TextView) findViewById(R.id.textViewTempClock);
         textViewTempClock.setText(((MyVoilaApp) this.getApplication()).tempHour+((int) ((MyVoilaApp) this.getApplication()).tempMin));
@@ -522,6 +531,13 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
+    public static String getNewQuestionFromByteArray(byte[] value) {
+        String result = "";
+        for (int i = 2; i < value.length; i += 3) {
+            result += getCharFromThreeValues(value[i], value[i + 1], value[i + 2]);
+        }
+        return result;
+    }
     public void reloadMainActivityIfPossible(){
         int sleeping= ((MyVoilaApp) this.getApplication()).getSleepingStatus();
         int isAnsweringQuestion = ((MyVoilaApp) this.getApplication()).getIsAnsweringQuestion();
@@ -548,13 +564,19 @@ public class MainActivity extends AppCompatActivity {
     }
     public void updatePartOfTheDay(int newPart){
         ((MyVoilaApp) this.getApplication()).setPartOfTheDay(newPart);
-        if (newPart==4){
+        if (newPart==1){
             ((MyVoilaApp) this.getApplication()).initializeQuestions();
         }
     }
     public void updateUsername(String usernameValue){
         ((MyVoilaApp) this.getApplication()).setUsername(usernameValue);
     }
+    public void updateNewQuestionToAsk(String newQuestionValue){
+        ((MyVoilaApp) this.getApplication()).setNewQuestionIsSent(1);
+        ((MyVoilaApp) this.getApplication()).setNewQuestionToAsk(newQuestionValue);
+        //System.out.println("newquestiontoqsk:"+((MyVoilaApp) this.getApplication()).getNewQuestionIsSent());
+    }
+
 
     /**
      * Callback to handle incoming requests to the GATT server.
@@ -639,6 +661,10 @@ public class MainActivity extends AppCompatActivity {
                     String username = getUsernameFromByteArray(value);
                     System.out.println("new UserName BLE: "+username);
                     updateUsername(username);
+                }else if (value[0]==6){ //user's new question info received
+                    String newQuestion = getNewQuestionFromByteArray(value);
+                    System.out.println("new NewQuestion BLE: "+newQuestion);
+                    updateNewQuestionToAsk(newQuestion);
                 }
 
                 reloadMainActivityIfPossible(); //Possible only if not sleeping and not answering question

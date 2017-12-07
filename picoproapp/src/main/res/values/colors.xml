@@ -4,10 +4,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="blue_voila">#5291ea</color>
-    <color name="button2">#0fb245</color>
-    <color name="button3">#78b25a</color>
-    <color name="button4">#97e258</color>
+    <color name="button2">#33FF66</color>
+    <color name="button3">#0099FF</color>
+    <color name="button4">#99CCFF</color>
     <color name="button5">#ffff66</color>
     <color name="button6">#ff6633</color>
     <color name="button7">#ff0033</color>
+    <color name="button1">#33cc00</color>
 </resources>

@@ -73,7 +73,7 @@ public class WakeUpMode extends AppCompatActivity {
     }
 
     public void goToQuestionMorning(){
-        ((MyVoilaApp) this.getApplication()).isTheMorningQuestion = 1;
+        ((MyVoilaApp) this.getApplication()).isASpecialQuestion = 1;
         Intent intentToAskQuestion = new Intent(this, AskQuestion.class);
         this.startActivity(intentToAskQuestion);
     }

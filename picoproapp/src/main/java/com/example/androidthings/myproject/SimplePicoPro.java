@@ -55,7 +55,7 @@ public abstract class SimplePicoPro extends SimpleBoard {
 
     public SimplePicoPro() {
         try {
-            GPIO_10 = service.openGpio("GPIO_10");
+            //GPIO_10 = service.openGpio("GPIO_10");
             GPIO_128 = service.openGpio("GPIO_128");
             GPIO_172 = service.openGpio("GPIO_172");
             GPIO_173 = service.openGpio("GPIO_173");
@@ -68,8 +68,8 @@ public abstract class SimplePicoPro extends SimpleBoard {
             GPIO_37 = service.openGpio("GPIO_37");
             GPIO_39 = service.openGpio("GPIO_39");
 
-            GPIO_10.setEdgeTriggerType(Gpio.EDGE_NONE);
-            GPIO_10.registerGpioCallback(gpioCallback);
+            //GPIO_10.setEdgeTriggerType(Gpio.EDGE_NONE);
+            //GPIO_10.registerGpioCallback(gpioCallback);
             GPIO_128.setEdgeTriggerType(Gpio.EDGE_NONE);
             GPIO_128.registerGpioCallback(gpioCallback);
             GPIO_172.setEdgeTriggerType(Gpio.EDGE_NONE);
@@ -221,15 +221,25 @@ public abstract class SimplePicoPro extends SimpleBoard {
         int answerSelected = ((MyVoilaApp) activity.getApplication()).getAnswerSelected();
         return answerSelected;
     }
-    public int getIsTheMorningQuestion(){
-        return ((MyVoilaApp) activity.getApplication()).isTheMorningQuestion;
+    public int getIsASpecialQuestion(){
+        return ((MyVoilaApp) activity.getApplication()).isASpecialQuestion;
     }
-    public void setIsTheMorningQuestion(int value){
-        ((MyVoilaApp) activity.getApplication()).isTheMorningQuestion=value;
+    public int getNewQuestionIsSent(){
+        return ((MyVoilaApp) activity.getApplication()).getNewQuestionIsSent();
+    }
+
+    public void setNewQuestionIsSent(int value){
+        ((MyVoilaApp) activity.getApplication()).setNewQuestionIsSent(value);
+    }
+
+    public String getNewQuestionToAsk(){
+        return ((MyVoilaApp) activity.getApplication()).getNewQuestionToAsk();
+    }
+    public void setIsASpecialQuestion(int value){
+        ((MyVoilaApp) activity.getApplication()).isASpecialQuestion=value;
     }
     public void changeSelectedAnswer(){
         Animation animationButton = AnimationUtils.loadAnimation(activity, R.anim.anim_scale);
-        //TODO over 7
         int answerSelected = ((MyVoilaApp) activity.getApplication()).getAnswerSelected();
         int newAnswerSelected;
         if (answerSelected==7){
@@ -244,7 +254,7 @@ public abstract class SimplePicoPro extends SimpleBoard {
         Button button = (Button) activity.findViewById(R.id.button1-1+newAnswerSelected);
         button.startAnimation(animationButton);
         TextView textViewFeedback = activity.findViewById(R.id.textViewFeedback);
-        if ( getIsTheMorningQuestion()==1){
+        if ( getIsASpecialQuestion()==1){
             textViewFeedback.setText(((MyVoilaApp) activity.getApplication()).getAnswerFeedback("quality"));
             textViewFeedback.setTextColor(activity.getResources().getColor(((MyVoilaApp) activity.getApplication()).getColorFeedback()));
         }else{

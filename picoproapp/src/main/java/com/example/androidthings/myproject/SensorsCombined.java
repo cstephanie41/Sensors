@@ -59,8 +59,10 @@ public class SensorsCombined extends SimplePicoPro{
         setEdgeTrigger(GPIO_39, Gpio.EDGE_BOTH);
         pinMode(afternoon, Gpio.DIRECTION_OUT_INITIALLY_LOW);
         setEdgeTrigger(GPIO_37, Gpio.EDGE_BOTH);
+        //pinMode(evening, Gpio.DIRECTION_OUT_INITIALLY_LOW);
+        //setEdgeTrigger(GPIO_35, Gpio.EDGE_BOTH);
         pinMode(evening, Gpio.DIRECTION_OUT_INITIALLY_LOW);
-        setEdgeTrigger(GPIO_35, Gpio.EDGE_BOTH);
+        setEdgeTrigger(GPIO_33, Gpio.EDGE_BOTH);
         pinMode(off, Gpio.DIRECTION_OUT_INITIALLY_LOW);
         setEdgeTrigger(GPIO_34, Gpio.EDGE_BOTH);
 
@@ -90,7 +92,18 @@ public class SensorsCombined extends SimplePicoPro{
         int isAnsweringQuestion = isAnsweringQuestion();
         int answerSelected = getAnswerSelected();
         int partOfTheDay = getPartOfTheDay();
-        int isTheMorningQuestion = getIsTheMorningQuestion();
+        int isASpecialQuestion = getIsASpecialQuestion();
+
+        // If the user send a new question by BLE
+        int newQuestionIsSent  = getNewQuestionIsSent();
+        if(newQuestionIsSent==1){
+            if(sleeping==0 && isAnsweringQuestion ==0){
+                setIsASpecialQuestion(1);
+                lightOn(2);
+                popQuestion(getNewQuestionToAsk(),"");
+            }
+        }
+
 
         //digitalWrite (off, LOW);
 
@@ -103,16 +116,17 @@ public class SensorsCombined extends SimplePicoPro{
         //check if IR sensor has been activated
         //if activated, turn off lights
         if (irTriggered ==1) {
-            System.out.println("IR triggered, isAnsweringQuestion: "+isAnsweringQuestion+", answerSelected: "+answerSelected);
+            System.out.println("IR triggered, isAnsweringQuestion: "+isAnsweringQuestion+", answerSelected: "+answerSelected+", isASpecialQuestion: "+isASpecialQuestion+", partOfTheDay: "+partOfTheDay);
             if (sleeping == 0){ // No waving hand is accepted if the user is sleeping
                 if (isAnsweringQuestion==1 && answerSelected >0){ //If the device asks a question to the user
                     confirmAnswer();
                     lightOff();
-                    // update the index only when it is not the morning question
-                    if (isTheMorningQuestion==0){
+                    // update the index only when it is not the wake-up question or a question sent by the user
+                    if (isASpecialQuestion==0){
                         updateIndexQuestions();
                     }else{
-                        setIsTheMorningQuestion(0);
+                        setNewQuestionIsSent(0);
+                        setIsASpecialQuestion(0);
                     }
 
                 }
@@ -120,7 +134,7 @@ public class SensorsCombined extends SimplePicoPro{
                     lightOn(2);
                     String randomQuestion = getRandomQuestion();
                     if (partOfTheDay==1 || partOfTheDay==2 || partOfTheDay==3){
-                        popQuestion(randomQuestion,"Question");
+                        popQuestion(randomQuestion,"");
                         System.out.println("updateIndexQuestion called");
                     }
 
@@ -237,7 +251,7 @@ public class SensorsCombined extends SimplePicoPro{
         }
         //shortSum = Math.floor(sum * 100) / 100;
         //System.out.println("Ir Average value: "+Math.floor(average * 100) / 100);
-        if (Math.floor(average * 100) / 100 >= 0.5 && currentTime - irTriggerTime > 1000){
+        if (Math.floor(average * 100) / 100 >= 0.65 && currentTime - irTriggerTime > 1000){
             irTriggerTime = millis();
             System.out.println("IR seen");
             return 1;
@@ -256,10 +270,10 @@ public class SensorsCombined extends SimplePicoPro{
 
     public void lightOff(){
         System.out.println("light off");
+        digitalWrite (off, HIGH);
         digitalWrite(morning,LOW);
         digitalWrite(afternoon,LOW);
         digitalWrite(evening,LOW);
-        digitalWrite (off, HIGH);
     }
 
     public int isAccelerometerTriggered(){
