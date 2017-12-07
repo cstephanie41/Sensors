@@ -32,6 +32,8 @@ public class AskQuestion extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
 
+        ((MyVoilaApp) this.getApplication()).currentActivity = this;
+
         // Write the Question
         TextView textViewQuestion = (TextView) findViewById(R.id.textViewQuestion);
         String currentQuestion = ((MyVoilaApp) this.getApplication()).getQuestion();
@@ -58,7 +60,7 @@ public class AskQuestion extends AppCompatActivity {
         imageViewWeather.setImageResource(RDrawableIcon);
 
         //TEMP Put 0 instead
-        ((MyVoilaApp) this.getApplication()).setAnswerSelected(1);
+        ((MyVoilaApp) this.getApplication()).setAnswerSelected(0);
 
         //TEMP Clock: DEMO PURPOSE
         TextView textViewTempClock = (TextView) findViewById(R.id.textViewTempClock);
@@ -73,8 +75,30 @@ public class AskQuestion extends AppCompatActivity {
         DonutProgress donutProgress = (DonutProgress) findViewById(R.id.donut_progress);
         double percentKnowledge = ((MyVoilaApp) this.getApplication()).getPercentageKnowledge();
         donutProgress.setDonut_progress(""+(int) percentKnowledge);
+
+        int answerSelected =  ((MyVoilaApp) this.getApplication()).getAnswerSelected();
+
+
+        /*
+        Button button1 = (Button) findViewById(R.id.button1);
+        button1.postDelayed(new Runnable(){
+            @Override
+            public void run()
+            {
+                System.out.println(""+getAnswerSelected());
+                if (getAnswerSelected()==1){
+                    System.out.println("animation button1");
+                    button1.startAnimation(animationButton);
+                }
+            }
+        }, 1000);
+        */
     }
 
+
+    public int getAnswerSelected(){
+        return ((MyVoilaApp) this.getApplication()).getAnswerSelected();
+    }
 
     /** Selection of the answer */
     public void selectAnswer1(View view) {

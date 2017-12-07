@@ -22,7 +22,7 @@ public class SleepingMode extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sleeping_mode);
 
-        String username = ((MyVoilaApp) this.getApplication()).getUsrname();
+        String username = ((MyVoilaApp) this.getApplication()).getUsername();
 
         TextView textViewGoodNight = (TextView) findViewById(R.id.textViewGoodNight);
         textViewGoodNight.setText("Good Night "+username+" !");

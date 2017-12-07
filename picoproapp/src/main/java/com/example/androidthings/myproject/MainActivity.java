@@ -130,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         if(sensorsActivated==0){
-            myBoardApp.setActivity(this);
+            ((MyVoilaApp) this.getApplication()).currentActivity = this;
+            myBoardApp.setActivity(((MyVoilaApp) this.getApplication()).currentActivity);
             myBoardApp.setup();
             handler.post(loopRunnable);
             ((MyVoilaApp) this.getApplication()).setSensorsStatus(1);

@@ -1,5 +1,6 @@
 package com.example.androidthings.myproject;
 
+import android.app.Activity;
 import android.app.Application;
 //package com.voila.voila.voilapicopro;
 
@@ -49,13 +50,15 @@ public class MyVoilaApp extends Application {
         return indexLogoWeatherCorrespondance;
     }
 
+    public Activity currentActivity;
+
 
     //TEMP DEMO PURPOSE
     public String tempHour="15:";
     public double tempMin=10.;
 
     //USERNAME
-    public String getUsrname() {
+    public String getUsername() {
         return username;
     }
 

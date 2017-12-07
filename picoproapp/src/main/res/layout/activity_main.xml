@@ -8,26 +8,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/imageViewWeather"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="@+id/textViewTemperature"
-        app:layout_constraintStart_toStartOf="@+id/textViewTemperature"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/weather01d" />
-
-    <TextView
+        <TextView
         android:id="@+id/textViewTemperature"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:background="@android:color/white"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/temperature"
-        android:textColor="@android:color/black"
+        android:textColor="@color/blue_voila"
         android:textSize="44sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +41,7 @@
         android:background="@android:color/white"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/number_of_steps"
-        android:textColor="@android:color/holo_blue_bright"
+        android:textColor="@color/blue_voila"
         android:textSize="38sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -90,7 +78,7 @@
         android:layout_marginTop="48dp"
         android:gravity="center_vertical|center_horizontal"
         android:text="Number of steps for the past 7 days"
-        android:textColor="@android:color/holo_blue_bright"
+        android:textColor="@color/blue_voila"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +93,7 @@
         android:background="@android:color/white"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical|center_horizontal"
-        android:textColor="@android:color/black"
+        android:textColor="@color/blue_voila"
         android:textSize="44sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -115,11 +103,23 @@
         android:id="@+id/donut_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="32dp"
         custom:donut_progress="30"
         custom:layout_constraintBottom_toBottomOf="parent"
         custom:layout_constraintEnd_toEndOf="parent" />
 
+        <ImageView
+            android:id="@+id/imageViewWeather"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="@+id/textViewTemperature"
+            app:layout_constraintStart_toStartOf="@+id/textViewTemperature"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/weather01d" />
 
-</android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>

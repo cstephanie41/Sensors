@@ -39,6 +39,14 @@ public class SensorsCombined extends SimplePicoPro{
     long PirCurrentTime=0;
     long PirTriggerTime=0;
 
+    // Initialize for scroll wheel:
+    float a1;
+    ArrayList<Float> scrollReadings = new ArrayList<Float>();
+    int size = scrollReadings.size();
+    float difference = 0;
+    long ScrollTriggerTime=0;
+    long ScrollCurrentTime=0;
+
 
 
     @Override
@@ -72,6 +80,7 @@ public class SensorsCombined extends SimplePicoPro{
     @Override
     public void loop() {
 
+
         // Reading current Time in ms
         currentTime = millis();
 
@@ -92,8 +101,7 @@ public class SensorsCombined extends SimplePicoPro{
         //check if IR sensor has been activated
         //if activated, turn off lights
         if (irTriggered ==1) {
-            System.out.println(answerSelected);
-            System.out.println("IR triggered, isAnsweringQuestion: "+isAnsweringQuestion);
+            System.out.println("IR triggered, isAnsweringQuestion: "+isAnsweringQuestion+", answerSelected: "+answerSelected);
             if (sleeping == 0){ // No waving hand is accepted if the user is sleeping
                 if (isAnsweringQuestion==1 && answerSelected >0){ //If the device asks a question to the user
                     confirmAnswer();
@@ -121,6 +129,24 @@ public class SensorsCombined extends SimplePicoPro{
                     */
                 }
             }
+        }
+
+        // Scroll Wheel part
+        a1 = analogRead(A1);
+        scrollReadings.add(a1);
+        //System.out.println("ScrollWheel: " + a1 + '\n');
+        size = scrollReadings.size();
+        ScrollCurrentTime=millis();
+        if (size >2) {
+            difference = java.lang.Math.abs(scrollReadings.get(size - 1) - scrollReadings.get(size - 2));
+        }
+        if (difference > 0.4 && ScrollCurrentTime-ScrollTriggerTime >750) {
+            System.out.println("scroll next answer");
+            System.out.println("isAnsweringQuestion:"+isAnsweringQuestion);
+            if (isAnsweringQuestion==1){
+                changeSelectedAnswer();
+            }
+            ScrollTriggerTime = millis();
         }
 
 

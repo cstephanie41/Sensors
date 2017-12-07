@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.things.contrib.driver.adcv2x.Adcv2x;
@@ -34,6 +37,7 @@ public abstract class SimplePicoPro extends SimpleBoard {
     static final boolean HIGH = true;
     static final boolean LOW = false;
 
+
     static PeripheralManagerService service = new PeripheralManagerService();
     static Gpio GPIO_10, GPIO_128, GPIO_172, GPIO_173, GPIO_174, GPIO_175, GPIO_32, GPIO_33, GPIO_34, GPIO_35, GPIO_37, GPIO_39;
     static Pwm PWM1, PWM2;
@@ -46,6 +50,7 @@ public abstract class SimplePicoPro extends SimpleBoard {
     static int A2 = 2;
     static int A3 = 3;
     private Activity activity;
+
 
     public SimplePicoPro() {
         try {
@@ -185,7 +190,6 @@ public abstract class SimplePicoPro extends SimpleBoard {
         ((MyVoilaApp) activity.getApplication()).setQuestion(question);
         ((MyVoilaApp) activity.getApplication()).setQuestionExtra(questionExtra);
 
-
         Intent intentToAskQuestion = new Intent(activity, AskQuestion.class);
         activity.startActivity(intentToAskQuestion);
     }
@@ -215,6 +219,23 @@ public abstract class SimplePicoPro extends SimpleBoard {
     public int getAnswerSelected(){
         int answerSelected = ((MyVoilaApp) activity.getApplication()).getAnswerSelected();
         return answerSelected;
+    }
+    public void changeSelectedAnswer(){
+        Animation animationButton = AnimationUtils.loadAnimation(activity, R.anim.anim_scale);
+        //TODO over 7
+        int answerSelected = ((MyVoilaApp) activity.getApplication()).getAnswerSelected();
+        int newAnswerSelected;
+        if (answerSelected==7){
+            newAnswerSelected=1;
+        }
+        else{ newAnswerSelected = answerSelected+1;}
+        activity = ((MyVoilaApp) activity.getApplication()).currentActivity;
+        ((MyVoilaApp) activity.getApplication()).setAnswerSelected(newAnswerSelected);
+        System.out.println("new Answer selected: "+newAnswerSelected);
+        System.out.println(activity.getClass().getSimpleName());
+        Button button = (Button) activity.findViewById(R.id.button1-1+newAnswerSelected);
+        button.startAnimation(animationButton);
+
     }
     public int getPartOfTheDay(){
         int partOfTheDay = ((MyVoilaApp) activity.getApplication()).getPartOfTheDay();
@@ -253,6 +274,7 @@ public abstract class SimplePicoPro extends SimpleBoard {
     }
 
     public void ToggleWakeUp() {
+        /*
         ((MyVoilaApp) activity.getApplication()).setSleepingStatus(0);
         Date currentTime = Calendar.getInstance().getTime();
         ((MyVoilaApp) activity.getApplication()).setSleepEndTime(currentTime);
@@ -271,10 +293,13 @@ public abstract class SimplePicoPro extends SimpleBoard {
         long SleepElapsedSeconds = sleepDuration / secondsInMilli;
         System.out.println("Sleep Duration: "+ sleepDuration+" ms");
         System.out.println("Sleep Duration: "+ SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min, "+ SleepElapsedSeconds+" s");
+*/
 
 
+        //popQuestion("How did you sleep?","Sleep Duration: "+SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min");
 
-        popQuestion("How did you sleep?","Sleep Duration: "+SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min");
+        Intent intentToWakeUpMode = new Intent(activity, WakeUpMode.class);
+        activity.startActivity(intentToWakeUpMode);
         /*
         ((MyVoilaApp) activity.getApplication()).setQuestion("How did you sleep?");
         ((MyVoilaApp) activity.getApplication()).setQuestionExtra("Sleep Duration: "+SleepElapsedHours+" h, "+ SleepElapsedMinutes+" min");

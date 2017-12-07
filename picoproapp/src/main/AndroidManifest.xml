@@ -44,6 +44,7 @@
         </activity>
         <activity android:name=".SleepingMode" />
         <activity android:name=".AskQuestion" />
+        <activity android:name=".WakeUpMode" />
     </application>
 
 </manifest>
