@@ -194,10 +194,23 @@ public class SensorsCombined extends SimplePicoPro{
                 if (isAnsweringQuestion ==0){
                     lightOn(3);
                     ToggleSleep();
+                    setTimeout(() -> lightOff(), 4000);
                 }
             }
         }
         delay(100);
+    }
+
+    public static void setTimeout(Runnable runnable, int delay){
+        new Thread(() -> {
+            try {
+                Thread.sleep(delay);
+                runnable.run();
+            }
+            catch (Exception e){
+                System.err.println(e);
+            }
+        }).start();
     }
 
     //Get input from PIR
@@ -251,7 +264,7 @@ public class SensorsCombined extends SimplePicoPro{
         }
         //shortSum = Math.floor(sum * 100) / 100;
         //System.out.println("Ir Average value: "+Math.floor(average * 100) / 100);
-        if (Math.floor(average * 100) / 100 >= 0.65 && currentTime - irTriggerTime > 1000){
+        if (Math.floor(average * 100) / 100 >= 0.55 && currentTime - irTriggerTime > 1000){
             irTriggerTime = millis();
             System.out.println("IR seen");
             return 1;

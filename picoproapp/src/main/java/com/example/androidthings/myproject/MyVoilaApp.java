@@ -39,7 +39,7 @@ public class MyVoilaApp extends Application {
 
 
     private List<Pair<String,String>> questionsMorning = Arrays.asList(new Pair<>("How did you sleep last night?","quality"),new Pair<>("How well did you sleep?","quality"),new Pair<>("How would you rate your sleep?","quality"));
-    private List<Pair<String,String>> questionsAfternoon = Arrays.asList(new Pair<>("What is your level of stress today?","quality"),new Pair<>("How do you rate your current mood?","quality"));
+    private List<Pair<String,String>> questionsAfternoon = Arrays.asList(new Pair<>("How do you handle stress today?","quality"),new Pair<>("How do you rate your current mood?","quality"));
     private List<Pair<String,String>> questionsEvening = Arrays.asList(new Pair<>("How was your day in general?","quality"),new Pair<>("How much sport did you do today?","quantity_gym"));
     private int indexMorningQuestion = 0;
     private int indexAfternoonQuestion = 0;
